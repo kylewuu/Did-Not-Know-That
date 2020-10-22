@@ -1,21 +1,13 @@
 package com.example.tinderforknowledge.webscraping;
 
-import android.app.ProgressDialog;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
-
-import com.example.tinderforknowledge.MainActivity;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.safety.Whitelist;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 
 public class Article extends AsyncTask<Void, Void, String> {
@@ -23,6 +15,7 @@ public class Article extends AsyncTask<Void, Void, String> {
     TextView tv;
     private String title;
     private String documentString;
+    private String processedDocument;
 
     public Article(TextView tv) {
         this.tv = tv;
@@ -67,7 +60,16 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        showText();
+        summarizeDocument();
+        tv.setText(processedDocument);
+    }
+
+    private void summarizeDocument() {
+        processedDocument = ReturnProcessedDocument(documentString);
+    }
+
+    public void showTextTemp() {
+        tv.setText(documentString);
     }
 
     // Used to load the 'native-lib' library on application startup.
@@ -75,11 +77,6 @@ public class Article extends AsyncTask<Void, Void, String> {
         System.loadLibrary("native-lib");
     }
 
-
-    public void showText() {
-        tv.setText(documentString);
-    }
-
     // C++ methods
-    public native String DisplayText(String x);
+    public native String ReturnProcessedDocument(String x);
 }

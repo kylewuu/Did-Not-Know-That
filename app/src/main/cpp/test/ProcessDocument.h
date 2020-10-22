@@ -3,16 +3,18 @@
 //
 #include <iostream>
 #include <string>
+#include <jni.h>
 
 #ifndef TINDER_FOR_KNOWLEDGE_MAIN_H
 #define TINDER_FOR_KNOWLEDGE_MAIN_H
 
 using std::string;
 
-class Main {
+class ProcessDocument {
 public:
-    Main();
-    string HelloWorld();
+    ProcessDocument(string x);
+    string mainLoop();
+    string summarizer();
 };
 
 

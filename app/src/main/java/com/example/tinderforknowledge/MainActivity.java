@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
         // my functions
 
-        this.update(tv);
+        this.renderCard(tv);
     }
 
-    private void update(TextView tv) {
+    private void renderCard(TextView tv) {
         article = new Article(tv);
         article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
     }
