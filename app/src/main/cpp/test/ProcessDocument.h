@@ -15,6 +15,7 @@ public:
     ProcessDocument(string x);
     string mainLoop();
     string summarizer();
+    void breakDownSentences();
 };
 
 

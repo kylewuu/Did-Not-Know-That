@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
@@ -30,11 +31,12 @@ public class Article extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... voids) {
         try {
             Document document = Jsoup.connect("https://simple.wikipedia.org/wiki/Subaru").get();
+            Element bodyContent = document.getElementById("bodyContent");
 
-            document.outputSettings(new Document.OutputSettings().prettyPrint(false));//makes html() preserve linebreaks and spacing
-            document.select("br").append("\\n");
-            document.select("p").prepend("\\n");
-            String s = document.html().replaceAll("\\\\n", "\n");
+            document.outputSettings(new Document.OutputSettings().prettyPrint(true));//makes html() preserve linebreaks and spacing
+            document.select("br").append(" ");
+            document.select("p").prepend(" ");
+            String s = document.html().replaceAll("\\\\n", " ");
 
             //Get the logo source of the website
 //            Element img = document.select("img").first();
@@ -45,8 +47,8 @@ public class Article extends AsyncTask<Void, Void, String> {
 //
 //            //Get the title of the website
             title = document.title();
-            documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-//
+//            documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+            documentString = bodyContent.text();
 //            documentString = s;
 //            tv.setText(title);
 

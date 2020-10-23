@@ -15,10 +15,15 @@ ProcessDocument::ProcessDocument(string x){
 }
 
 string ProcessDocument::mainLoop(){
+    breakDownSentences();
     return summarizer();
 }
 
-// work on this function next, needs to be broken down
+// work on these functions next, needs to be broken down
+void ProcessDocument::breakDownSentences(){
+    rawDocument.erase(std::remove(rawDocument.begin(), rawDocument.end(), '\n'), rawDocument.end());
+}
+
 string ProcessDocument::summarizer() {
 
     return rawDocument;
