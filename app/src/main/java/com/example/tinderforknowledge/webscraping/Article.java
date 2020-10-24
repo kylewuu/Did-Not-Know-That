@@ -31,11 +31,76 @@ public class Article extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... voids) {
         try {
             Document document = Jsoup.connect("https://simple.wikipedia.org/wiki/Subaru").get();
-            Element bodyContent = document.getElementById("bodyContent");
+//            document.select("div#bodyContent");
+
+            String[] elementsToBeRemovedById = {
+//                    "bodyContent",
+                    "siteSub",
+                    "contentSub2",
+                    "coordinates",
+                    "toc",
+                    "mw-panel",
+                    "mw-head",
+                    "catlinks",
+                    "footer",
+                    "mw-navigation",
+                    "firstHeading",
+
+            };
+            String[] elementsToBeRemovedByClass = {
+                    "thumbinner",
+                    "mw-headline",
+                    "mw-editsection",
+                    "infobox",
+                    "mw-jump-link",
+                    "hatnote",
+                    "shortdescription",
+                    "mw-disambig",
+                    "reflist",
+                    "printfooter",
+                    "navbox",
+                    "boilerplate",
+
+
+            };
+
+            String[] elementsToBeRemovedByType = {
+                    "ul",
+                    "table",
+                    "dl",
+                    "title",
+            };
+
+            for(String element: elementsToBeRemovedById){
+                Element tempElement = document.getElementById(element);
+                if(tempElement != null){
+                    tempElement.remove();
+                }
+            }
+
+            for(String className: elementsToBeRemovedByClass) {
+                for(Element tempElement : document.select("."+className)){
+                    if(tempElement != null){
+                        tempElement.remove();
+                    }
+                }
+            }
+
+            for(String typeName: elementsToBeRemovedByType) {
+                for(Element tempElement : document.select(typeName)){
+                    if(tempElement != null){
+                        tempElement.remove();
+                    }
+                }
+            }
+
+
+
 
             document.outputSettings(new Document.OutputSettings().prettyPrint(true));//makes html() preserve linebreaks and spacing
-            document.select("br").append(" ");
-            document.select("p").prepend(" ");
+            document.select("br").append("\n");
+            document.select("p").prepend("\n");
+//
             String s = document.html().replaceAll("\\\\n", " ");
 
             //Get the logo source of the website
@@ -46,9 +111,9 @@ public class Article extends AsyncTask<Void, Void, String> {
 //            InputStream input = new java.net.URL(imgSrc).openStream();
 //
 //            //Get the title of the website
-            title = document.title();
-//            documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-            documentString = bodyContent.text();
+//            title = document.title();
+            documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+//            documentString = bodyContent.text();
 //            documentString = s;
 //            tv.setText(title);
 
