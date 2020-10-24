@@ -30,7 +30,7 @@ public class Article extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         try {
-            Document document = Jsoup.connect("https://simple.wikipedia.org/wiki/Subaru").get();
+            Document document = Jsoup.connect("https://wikipedia.org/wiki/Vancouver").get();
 //            document.select("div#bodyContent");
 
             String[] elementsToBeRemovedById = {
@@ -60,6 +60,9 @@ public class Article extends AsyncTask<Void, Void, String> {
                     "printfooter",
                     "navbox",
                     "boilerplate",
+                    "mbox-small",
+                    "rt-commentedText",
+
 
 
             };

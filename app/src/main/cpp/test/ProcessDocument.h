@@ -16,7 +16,11 @@ public:
     string mainLoop();
     string summarizer();
     void removeSquareBrackets();
+    void replace(string original, string replacement);
+    void removeWhiteSpace();
+    void removeNewLines();
     void breakDownSentences();
+    void createSentencesWithoutStopWords();
 };
 
 
