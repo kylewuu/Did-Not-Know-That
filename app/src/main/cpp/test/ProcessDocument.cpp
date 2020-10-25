@@ -7,6 +7,7 @@
 #include <string>
 #include <regex>
 #include <android/log.h>
+#include <map>
 
 #define APPNAME "MyApp"
 
@@ -14,13 +15,22 @@
 
 using std::string;
 using namespace std;
-
+using std::map;
 
 string rawDocument;
 vector<string> sentences;
+map<string, int> wordFrequency;
+map<string, int> sentenceRanking;
+string stopwords[127];
+int averageScore;
 
 ProcessDocument::ProcessDocument(string x){
     rawDocument = x;
+    string stopwordsTemp[] = {"ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than"};
+    for(int i=0; i<sizeof(stopwordsTemp)/sizeof(stopwordsTemp[0]);i++)
+    {
+        stopwords[i] = stopwordsTemp[i];
+    }
 }
 
 string ProcessDocument::mainLoop(){
@@ -30,7 +40,8 @@ string ProcessDocument::mainLoop(){
     replace("&amp;","&");
     removeWhiteSpace();
     breakDownSentences();
-    createSentencesWithoutStopWords();
+    countWordFrequency();
+    rankSentences();
     return summarizer();
 }
 
@@ -113,21 +124,83 @@ void ProcessDocument::breakDownSentences()
     }
     sentences.push_back(currentSentence);
 
-    for(int i=0;i<sentencesCount;i++)
-    {
-        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",sentences[i].c_str());
-    }
+//    for(int i=0;i<sentencesCount;i++)
+//    {
+//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",sentences[i].c_str());
+//    }
 
 
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",rawDocument.c_str());
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "The number of sentences is: %d", sentencesCount);
 }
 
-void createSentencesWithoutStopWords()
+void ProcessDocument::countWordFrequency()
 {
     // WORK ON THIS NEXT
+    string wordTemp = "";
+    for(int i=0;i<rawDocument.length();i++)
+    {
+        if(isspace(rawDocument[i]) || rawDocument[i] == '.' || rawDocument[i] == ',' || rawDocument[i] == '(' || rawDocument[i] == ')' || rawDocument[i] == '"')
+        {
+            if(wordTemp != "")
+            {
+                if(wordFrequency[wordTemp])
+                {
+                    wordFrequency[wordTemp] += 1;
+                } else{
+                    wordFrequency[wordTemp] = 1;
+                }
+            }
+            wordTemp = "";
+        }
+        else wordTemp += tolower(rawDocument[i]);
+
+    }
+
+//    for (auto const& pair: wordFrequency) {
+//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
+//    }
 }
+
+void ProcessDocument::rankSentences()
+{
+    for(int i=0;i<sentences.size();i++)
+    {
+        for (auto const& pair: wordFrequency) {
+            if(sentences[i].find(pair.first) != string::npos)
+            {
+                if(sentenceRanking[sentences[i]])
+                {
+                    sentenceRanking[sentences[i]] += 1;
+                } else{
+                    sentenceRanking[sentences[i]] = 1;
+                }
+            }
+        }
+    }
+//    for (auto const& pair: sentenceRanking) {
+//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
+//    }
+
+    int totalScore = 0;
+    for (auto const& pair: sentenceRanking) {
+        totalScore += pair.second;
+    }
+
+    averageScore = totalScore/sentences.size();
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%d}", averageScore);
+}
+
 string ProcessDocument::summarizer() {
 
-    return rawDocument;
+    string processedDocument = sentences[0];
+    for(int i=1; i<sentences.size();i++)
+    {
+        if(sentenceRanking[sentences[i]] > averageScore){
+            processedDocument += sentences[i];
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
+        }
+    }
+
+    return processedDocument;
 }

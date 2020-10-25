@@ -20,7 +20,8 @@ public:
     void removeWhiteSpace();
     void removeNewLines();
     void breakDownSentences();
-    void createSentencesWithoutStopWords();
+    void countWordFrequency();
+    void rankSentences();
 };
 
 
