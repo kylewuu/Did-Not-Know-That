@@ -22,7 +22,8 @@ vector<string> sentences;
 map<string, int> wordFrequency;
 map<string, int> sentenceRanking;
 string stopwords[127];
-int averageScore;
+int scoreCutOff;
+int numberOfSentencesToDisplay;
 
 ProcessDocument::ProcessDocument(string x){
     rawDocument = x;
@@ -31,6 +32,8 @@ ProcessDocument::ProcessDocument(string x){
     {
         stopwords[i] = stopwordsTemp[i];
     }
+
+    numberOfSentencesToDisplay = 10;
 }
 
 string ProcessDocument::mainLoop(){
@@ -183,12 +186,17 @@ void ProcessDocument::rankSentences()
 //    }
 
     int totalScore = 0;
+    int tempScoreArray[sentences.size()];
+    int k = 0;
     for (auto const& pair: sentenceRanking) {
-        totalScore += pair.second;
+        tempScoreArray[k] = pair.second;
+        k++;
     }
+    sort(tempScoreArray, tempScoreArray + sentences.size(), greater<int>());
 
-    averageScore = totalScore/sentences.size();
-    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%d}", averageScore);
+    scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
+
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%d}", scoreCutOff);
 }
 
 string ProcessDocument::summarizer() {
@@ -196,9 +204,9 @@ string ProcessDocument::summarizer() {
     string processedDocument = sentences[0];
     for(int i=1; i<sentences.size();i++)
     {
-        if(sentenceRanking[sentences[i]] > averageScore){
+        if(sentenceRanking[sentences[i]] > (scoreCutOff)){
             processedDocument += sentences[i];
-//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
+            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
         }
     }
 
