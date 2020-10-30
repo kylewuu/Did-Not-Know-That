@@ -20,9 +20,9 @@ using std::map;
 string rawDocument;
 vector<string> sentences;
 map<string, int> wordFrequency;
-map<string, int> sentenceRanking;
+map<string, float> sentenceRanking;
 string stopwords[127];
-int scoreCutOff;
+float scoreCutOff;
 int numberOfSentencesToDisplay;
 
 ProcessDocument::ProcessDocument(string x){
@@ -33,7 +33,7 @@ ProcessDocument::ProcessDocument(string x){
         stopwords[i] = stopwordsTemp[i];
     }
 
-    numberOfSentencesToDisplay = 10;
+    numberOfSentencesToDisplay = 3;
 }
 
 string ProcessDocument::mainLoop(){
@@ -172,11 +172,12 @@ void ProcessDocument::rankSentences()
         for (auto const& pair: wordFrequency) {
             if(sentences[i].find(pair.first) != string::npos)
             {
-                if(sentenceRanking[sentences[i]])
+                if(sentenceRanking[sentences[i]] )
                 {
-                    sentenceRanking[sentences[i]] += 1;
+
+                    sentenceRanking[sentences[i]] += 1.0f;
                 } else{
-                    sentenceRanking[sentences[i]] = 1;
+                    sentenceRanking[sentences[i]] = 1.0f;
                 }
             }
         }
@@ -185,7 +186,17 @@ void ProcessDocument::rankSentences()
 //        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
 //    }
 
-    int totalScore = 0;
+    int wordCountTemp;
+    for(int i=0;i<sentences.size();i++)
+    {
+        wordCountTemp = 1;
+        for(char& c:sentences[i])
+        {
+            if(c == ',') wordCountTemp ++;
+        }
+        sentenceRanking[sentences[i]] /= (wordCountTemp);
+    }
+    
     int tempScoreArray[sentences.size()];
     int k = 0;
     for (auto const& pair: sentenceRanking) {
@@ -196,7 +207,7 @@ void ProcessDocument::rankSentences()
 
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
 
-    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%d}", scoreCutOff);
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
 }
 
 string ProcessDocument::summarizer() {
@@ -206,7 +217,7 @@ string ProcessDocument::summarizer() {
     {
         if(sentenceRanking[sentences[i]] > (scoreCutOff)){
             processedDocument += sentences[i];
-            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
         }
     }
 

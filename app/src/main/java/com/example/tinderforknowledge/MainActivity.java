@@ -25,14 +25,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
+        TextView titleTV = findViewById(R.id.title);
 
         // my functions
 
-        this.renderCard(tv);
+        this.renderCard(tv, titleTV);
     }
 
-    private void renderCard(TextView tv) {
-        article = new Article(tv);
+    private void renderCard(TextView tv, TextView titleTV) {
+        article = new Article(tv, titleTV);
         article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
     }
 
