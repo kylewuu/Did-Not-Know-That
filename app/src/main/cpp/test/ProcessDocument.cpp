@@ -33,7 +33,7 @@ ProcessDocument::ProcessDocument(string x){
         stopwords[i] = stopwordsTemp[i];
     }
 
-    numberOfSentencesToDisplay = 3;
+    numberOfSentencesToDisplay = 6;
 }
 
 string ProcessDocument::mainLoop(){
@@ -186,17 +186,17 @@ void ProcessDocument::rankSentences()
 //        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
 //    }
 
-    int wordCountTemp;
+    int longerSentenceBias;
     for(int i=0;i<sentences.size();i++)
     {
-        wordCountTemp = 1;
+        longerSentenceBias = 1;
         for(char& c:sentences[i])
         {
-            if(c == ',') wordCountTemp ++;
+            if(c == ',') longerSentenceBias ++;
         }
-        sentenceRanking[sentences[i]] /= (wordCountTemp);
+        sentenceRanking[sentences[i]] /= (longerSentenceBias);
     }
-    
+
     int tempScoreArray[sentences.size()];
     int k = 0;
     for (auto const& pair: sentenceRanking) {
