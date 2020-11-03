@@ -33,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderCard(TextView tv, TextView titleTV) {
-        article = new Article(tv, titleTV);
+
+        String topic = returnTopic();
+        article = new Article(tv, titleTV, topic);
         article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
     }
 
@@ -43,4 +45,5 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String DisplayText(String x);
+    public native String returnTopic();
 }

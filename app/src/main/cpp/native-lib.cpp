@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
-#include "test/ProcessDocument.h"
+#include "ProcessDocument/ProcessDocument.h"
+#include "FindTopic/FindTopic.h"
 
 string jstringToString(JNIEnv *pEnv, jstring pJstring);
 
@@ -62,4 +63,14 @@ string jstringToString(JNIEnv* env, jstring jstr)
     env->ReleaseByteArrayElements(barr, ba, 0);
     string str(rtn);
     return rtn;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_example_tinderforknowledge_MainActivity_returnTopic(JNIEnv *env, jobject thiz) {
+    // TODO: implement returnTopic()
+    FindTopic findTopic{};
+    string newString = findTopic.returnTopic();
+    return env->NewStringUTF(newString.c_str());
+
 }

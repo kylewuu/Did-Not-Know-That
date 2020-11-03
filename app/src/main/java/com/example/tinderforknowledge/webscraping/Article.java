@@ -18,10 +18,12 @@ public class Article extends AsyncTask<Void, Void, String> {
     private String title;
     private String documentString;
     private String processedDocument;
+    private String topic;
 
-    public Article(TextView tv, TextView title) {
+    public Article(TextView tv, TextView title, String topic) {
         this.tv = tv;
         this.titleTV = title;
+        this.topic = topic;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class Article extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         try {
-            Document document = Jsoup.connect("https://wikipedia.org/wiki/Vancouver").get();
+            Document document = Jsoup.connect("https://wikipedia.org/wiki/"+this.topic).get();
 //            document.select("div#bodyContent");
             title = document.getElementById("firstHeading").text();
 

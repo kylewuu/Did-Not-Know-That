@@ -192,9 +192,9 @@ void ProcessDocument::rankSentences()
         longerSentenceBias = 1;
         for(char& c:sentences[i])
         {
-            if(c == ',') longerSentenceBias ++;
+            if(c == ',') longerSentenceBias = 2;
         }
-        sentenceRanking[sentences[i]] /= (longerSentenceBias);
+        if(longerSentenceBias > 1) sentenceRanking[sentences[i]] /= (0.75 * longerSentenceBias);
     }
 
     int tempScoreArray[sentences.size()];
