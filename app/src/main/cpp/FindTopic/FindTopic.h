@@ -14,6 +14,7 @@ class FindTopic {
 public:
     FindTopic();
     string returnTopic();
+    void seekThroughWeights();
 };
 
 

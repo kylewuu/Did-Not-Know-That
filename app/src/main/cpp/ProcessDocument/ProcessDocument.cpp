@@ -207,7 +207,7 @@ void ProcessDocument::rankSentences()
 
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
 
-    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
+//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
 }
 
 string ProcessDocument::summarizer() {
