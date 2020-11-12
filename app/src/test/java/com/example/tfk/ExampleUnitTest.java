@@ -1,4 +1,4 @@
-package com.example.tinderforknowledge;
+package com.example.tfk;
 
 import org.junit.Test;
 

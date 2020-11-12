@@ -1,4 +1,4 @@
-package com.example.tinderforknowledge.webscraping;
+package com.example.tfk.webscraping;
 
 import android.os.AsyncTask;
 import android.widget.TextView;

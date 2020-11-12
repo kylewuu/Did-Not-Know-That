@@ -5,8 +5,8 @@
 #include <string>
 #include <jni.h>
 
-#ifndef TINDER_FOR_KNOWLEDGE_MAIN_H
-#define TINDER_FOR_KNOWLEDGE_MAIN_H
+#ifndef TFK_MAIN_H
+#define TFK_MAIN_H
 
 using std::string;
 
@@ -25,4 +25,4 @@ public:
 };
 
 
-#endif //TINDER_FOR_KNOWLEDGE_MAIN_H
+#endif //TFK_MAIN_H

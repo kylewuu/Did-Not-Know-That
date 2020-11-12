@@ -5,8 +5,8 @@
 #include <string>
 #include <jni.h>
 
-#ifndef TINDER_FOR_KNOWLEDGE_FINDDOCUMENT_H
-#define TINDER_FOR_KNOWLEDGE_FINDDOCUMENT_H
+#ifndef TFK_FINDDOCUMENT_H
+#define TFK_FINDDOCUMENT_H
 
 using std::string;
 
@@ -18,4 +18,4 @@ public:
 };
 
 
-#endif //TINDER_FOR_KNOWLEDGE_FINDDOCUMENT_H
+#endif //TFK_FINDDOCUMENT_H

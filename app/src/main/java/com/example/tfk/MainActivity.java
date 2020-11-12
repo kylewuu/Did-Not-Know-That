@@ -1,4 +1,4 @@
-package com.example.tinderforknowledge;
+package com.example.tfk;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.tinderforknowledge.webscraping.Article;
+import com.example.tfk.webscraping.Article;
 
 public class MainActivity extends AppCompatActivity {
 

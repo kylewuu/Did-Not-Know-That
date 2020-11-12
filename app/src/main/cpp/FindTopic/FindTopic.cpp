@@ -24,7 +24,7 @@ FindTopic::FindTopic()
 
 string FindTopic::returnTopic() {
     seekThroughWeights();
-    return "Subaru";
+    return "Vancouver";
 }
 
 void FindTopic::seekThroughWeights()

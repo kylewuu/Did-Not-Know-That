@@ -9,7 +9,8 @@ using std::string;
 using std::to_string;
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_tinderforknowledge_MainActivity_DisplayText(
+
+Java_com_example_tfk_MainActivity_DisplayText(
         JNIEnv* env,
         jobject /* this */,
         jstring test) {
@@ -26,7 +27,7 @@ Java_com_example_tinderforknowledge_MainActivity_DisplayText(
 
 // old template
 //extern "C" JNIEXPORT jstring JNICALL
-//Java_com_example_tinderforknowledge_MainActivity_stringFromJNI(
+//Java_com_example_TFK_MainActivity_stringFromJNI(
 //        JNIEnv* env,
 //        jobject /* this */) {
 //    std::string hello = "Hello from C++";
@@ -35,7 +36,7 @@ Java_com_example_tinderforknowledge_MainActivity_DisplayText(
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_tinderforknowledge_webscraping_Article_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
+Java_com_example_tfk_webscraping_Article_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
     string cppString = jstringToString(env, x);
     ProcessDocument processedDocument{cppString};
     string newString = processedDocument.mainLoop();
@@ -67,10 +68,9 @@ string jstringToString(JNIEnv* env, jstring jstr)
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_tinderforknowledge_MainActivity_returnTopic(JNIEnv *env, jobject thiz) {
+Java_com_example_tfk_MainActivity_returnTopic(JNIEnv *env, jobject thiz) {
     // TODO: implement returnTopic()
     FindTopic findTopic{};
     string newString = findTopic.returnTopic();
     return env->NewStringUTF(newString.c_str());
-
 }
