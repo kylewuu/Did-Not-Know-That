@@ -1,5 +1,6 @@
 package com.example.tfk;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -7,10 +8,19 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.tfk.webscraping.Article;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private Article article;
+    private FirebaseFunctions mFunctions;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -22,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mFunctions = FirebaseFunctions.getInstance();
 
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
@@ -34,16 +45,49 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderCard(TextView tv, TextView titleTV) {
 
-        String topic = returnTopic();
-        article = new Article(tv, titleTV, topic);
-        article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+        findTopicThroughHTTP().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(task.isSuccessful()){
+                    String topic = task.getResult();
+                    System.out.println(topic);
+
+                    // calls the article class and starts the processing for the articles
+                    article = new Article(tv, titleTV, topic, mFunctions);
+                    article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+
+                }
+            }
+        });
+
     }
 
+    // change this function so that it can take in array of strings
+    private Task<String> findTopicThroughHTTP() {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("text", "text");
+        data.put("push", true);
+
+        return mFunctions
+                .getHttpsCallable("findTopic")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        String result = (String) task.getResult().getData();
+                        return result;
+                    }
+                });
+    }
 
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
      */
     public native String DisplayText(String x);
-    public native String returnTopic();
+    public native String[] returnTopic();
 }

@@ -1,7 +1,18 @@
 package com.example.tfk.webscraping;
 
 import android.os.AsyncTask;
+import android.os.NetworkOnMainThreadException;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,6 +21,8 @@ import org.jsoup.safety.Whitelist;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Article extends AsyncTask<Void, Void, String> {
 
@@ -18,11 +31,15 @@ public class Article extends AsyncTask<Void, Void, String> {
     private String title;
     private String documentString;
     private String processedDocument;
+    private String[] topics;
     private String topic;
+    private FirebaseFunctions mFunctions;
 
-    public Article(TextView tv, TextView title, String topic) {
+    public Article(TextView tv, TextView title, String topic, FirebaseFunctions mFunctions) {
         this.tv = tv;
         this.titleTV = title;
+//        this.topics = topics; // not sure how to get the used topics yet
+        this.mFunctions = mFunctions;
         this.topic = topic;
     }
 
@@ -33,7 +50,27 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
+        getDocumentAndParse();
+        return null;
+
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        // sets the texts
+        summarizeDocument();
+        tv.setText(processedDocument);
+        titleTV.setText(title);
+
+    }
+
+    private void summarizeDocument() {
+        processedDocument = ReturnProcessedDocument(documentString);
+    }
+
+    public void getDocumentAndParse() {
         try {
+
             Document document = Jsoup.connect("https://wikipedia.org/wiki/"+this.topic).get();
 //            document.select("div#bodyContent");
             title = document.getElementById("firstHeading").text();
@@ -102,31 +139,14 @@ public class Article extends AsyncTask<Void, Void, String> {
                 }
             }
 
-
-
-
             document.outputSettings(new Document.OutputSettings().prettyPrint(true));//makes html() preserve linebreaks and spacing
             document.select("br").append("\n");
             document.select("p").prepend("\n");
 //
             String s = document.html().replaceAll("\\\\n", " ");
 
-            //Get the logo source of the website
-//            Element img = document.select("img").first();
-//            // Locate the src attribute
-//            String imgSrc = img.absUrl("src");
-//            // Download image from URL
-//            InputStream input = new java.net.URL(imgSrc).openStream();
-//
-//            //Get the title of the website
-
-//            title = "adsfasdfasdf";
             documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
-//            documentString = "There are many techniques available to generate extractive summarization to keep it simple, I will be using an unsupervised learning approach to find the sentences similarity and rank them. Summarization can be defined as a task of producing a concise and fluent summary while preserving key information and overall meaning. One benefit of this will be, you don’t need to train and build a model prior start using it for your project. It’s good to understand Cosine similarity to make the best use of the code you are going to see. Cosine similarity is a measure of similarity between two non-zero vectors of an inner product space that measures the cosine of the angle between them. Its measures cosine of the angle between vectors. The angle will be 0 if sentences are similar.";
-//            documentString = bodyContent.text();
 
-//            documentString = s;
-//            tv.setText(title);
 
 
         } catch (MalformedURLException e) {
@@ -134,22 +154,28 @@ public class Article extends AsyncTask<Void, Void, String> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        summarizeDocument();
-        tv.setText(processedDocument);
-        titleTV.setText(title);
-    }
+    // change this function so that it can take in array of strings
+    private Task<String> findTopicThroughHTTP() {
+        // Create the arguments to the callable function.
+        Map<String, Object> data = new HashMap<>();
+        data.put("text", "text");
+        data.put("push", true);
 
-    private void summarizeDocument() {
-        processedDocument = ReturnProcessedDocument(documentString);
-    }
-
-    public void showTextTemp() {
-        tv.setText(documentString);
+        return mFunctions
+                .getHttpsCallable("findTopic")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        String result = (String) task.getResult().getData();
+                        return result;
+                    }
+                });
     }
 
     // Used to load the 'native-lib' library on application startup.
