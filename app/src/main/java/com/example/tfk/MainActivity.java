@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,17 +46,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderCard(TextView tv, TextView titleTV) {
 
-        findTopicThroughHTTP().addOnCompleteListener(new OnCompleteListener<String>() {
+        findTopicThroughHTTP().addOnCompleteListener(new OnCompleteListener<String[]>() {
             @Override
-            public void onComplete(@NonNull Task<String> task) {
+            public void onComplete(@NonNull Task<String[]> task) {
                 if(task.isSuccessful()){
-                    String topic = task.getResult();
-                    System.out.println(topic);
+                    String[] topic = task.getResult();
+                    System.out.println("the array is: " + Arrays.toString(topic));
 
                     // calls the article class and starts the processing for the articles
-                    article = new Article(tv, titleTV, topic, mFunctions);
+                    article = new Article(tv, titleTV, topic[0], mFunctions); // picks the first element for now, will be changed later
                     article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
 
+                }
+                else if(task.isComplete())
+                {
+                    System.out.println(task.getException());
                 }
             }
         });
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // change this function so that it can take in array of strings
-    private Task<String> findTopicThroughHTTP() {
+    private Task<String[]> findTopicThroughHTTP() {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
         data.put("text", "text");
@@ -72,14 +77,15 @@ public class MainActivity extends AppCompatActivity {
         return mFunctions
                 .getHttpsCallable("findTopic")
                 .call(data)
-                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                .continueWith(new Continuation<HttpsCallableResult, String[]>() {
                     @Override
-                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                    public String[] then(@NonNull Task<HttpsCallableResult> task) throws Exception {
                         // This continuation runs on either success or failure, but if the task
                         // has failed then getResult() will throw an Exception which will be
                         // propagated down.
-                        String result = (String) task.getResult().getData();
+                        String[] result = task.getResult().getData().toString().substring(1, task.getResult().getData().toString().length() -1).split("\\s*,\\s*");
                         return result;
+
                     }
                 });
     }
