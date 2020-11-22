@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Article;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -14,14 +15,24 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
+import org.json.JSONArray;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
     private Article article;
     private FirebaseFunctions mFunctions;
+    private UserInformation userInfo;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -40,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
         TextView titleTV = findViewById(R.id.title);
 
         // my functions
+        userInfo = new UserInformation(getApplicationContext());
 
         this.renderCard(tv, titleTV);
+
     }
 
     private void renderCard(TextView tv, TextView titleTV) {
@@ -50,13 +63,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<String[]> task) {
                 if(task.isSuccessful()){
-                    String[] topic = task.getResult();
-                    System.out.println("the array is: " + Arrays.toString(topic));
+                    String[] topics = task.getResult();
+                    System.out.println("the array is: " + Arrays.toString(topics));
+                    userInfo.updateUserWords(topics);
+
 
                     // calls the article class and starts the processing for the articles
-                    article = new Article(tv, titleTV, topic[0], mFunctions); // picks the first element for now, will be changed later
+                    int rnd = new Random().nextInt(topics.length);
+                    System.out.println("random number and chosen topic: " + rnd + topics[rnd]);
+                    article = new Article(tv, titleTV, topics[rnd], mFunctions); // picks the first element for now, will be changed later
                     article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
-
+                    userInfo.updateUsedArticles(new String[]{article.getChosenUrl()});
+                    renderCard(tv, titleTV);
                 }
                 else if(task.isComplete())
                 {
@@ -71,8 +89,10 @@ public class MainActivity extends AppCompatActivity {
     private Task<String[]> findTopicThroughHTTP() {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
-        data.put("text", "text");
-        data.put("push", true);
+        String targetWord = userInfo.getTargetWord();
+        String[] bannedWords = userInfo.getUsedWords().toArray(new String[userInfo.getUsedWords().size()]);
+        data.put("targetWord", targetWord);
+        data.put("bannedWords", new JSONArray(Arrays.asList(bannedWords)));
 
         return mFunctions
                 .getHttpsCallable("findTopic")
@@ -95,5 +115,4 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String DisplayText(String x);
-    public native String[] returnTopic();
 }

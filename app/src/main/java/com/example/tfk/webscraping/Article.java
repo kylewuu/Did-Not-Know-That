@@ -34,6 +34,7 @@ public class Article extends AsyncTask<Void, Void, String> {
     private String[] topics;
     private String topic;
     private FirebaseFunctions mFunctions;
+    private String url;
 
     public Article(TextView tv, TextView title, String topic, FirebaseFunctions mFunctions) {
         this.tv = tv;
@@ -70,7 +71,8 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     public void getDocumentAndParse() {
         try {
-
+            this.topic = "austria-hungary";
+            url = "https://wikipedia.org/wiki/"+this.topic; // this needs to be changed later on because
             Document document = Jsoup.connect("https://wikipedia.org/wiki/"+this.topic).get();
 //            document.select("div#bodyContent");
             title = document.getElementById("firstHeading").text();
@@ -104,8 +106,6 @@ public class Article extends AsyncTask<Void, Void, String> {
                     "boilerplate",
                     "mbox-small",
                     "rt-commentedText",
-
-
 
             };
 
@@ -157,25 +157,8 @@ public class Article extends AsyncTask<Void, Void, String> {
     }
 
     // change this function so that it can take in array of strings
-    private Task<String> findTopicThroughHTTP() {
-        // Create the arguments to the callable function.
-        Map<String, Object> data = new HashMap<>();
-        data.put("text", "text");
-        data.put("push", true);
-
-        return mFunctions
-                .getHttpsCallable("findTopic")
-                .call(data)
-                .continueWith(new Continuation<HttpsCallableResult, String>() {
-                    @Override
-                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                        // This continuation runs on either success or failure, but if the task
-                        // has failed then getResult() will throw an Exception which will be
-                        // propagated down.
-                        String result = (String) task.getResult().getData();
-                        return result;
-                    }
-                });
+    public String getChosenUrl(){
+        return this.url;
     }
 
     // Used to load the 'native-lib' library on application startup.
