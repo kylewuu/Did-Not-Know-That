@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.tfk.user.UserInformation;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,13 +36,15 @@ public class Article extends AsyncTask<Void, Void, String> {
     private String topic;
     private FirebaseFunctions mFunctions;
     private String url;
+    private UserInformation userInfo;
 
-    public Article(TextView tv, TextView title, String topic, FirebaseFunctions mFunctions) {
+    public Article(TextView tv, TextView title, String topic, FirebaseFunctions mFunctions, UserInformation userInfo) {
         this.tv = tv;
         this.titleTV = title;
 //        this.topics = topics; // not sure how to get the used topics yet
         this.mFunctions = mFunctions;
         this.topic = topic;
+        this.userInfo = userInfo;
     }
 
     @Override
@@ -71,8 +74,9 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     public void getDocumentAndParse() {
         try {
-            this.topic = "austria-hungary";
+            this.topic = "vancouver";
             url = "https://wikipedia.org/wiki/"+this.topic; // this needs to be changed later on because
+            userInfo.updateUsedArticles(new String[]{url});
             Document document = Jsoup.connect("https://wikipedia.org/wiki/"+this.topic).get();
 //            document.select("div#bodyContent");
             title = document.getElementById("firstHeading").text();

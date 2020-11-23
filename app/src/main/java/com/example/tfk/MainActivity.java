@@ -16,6 +16,7 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -51,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
         TextView titleTV = findViewById(R.id.title);
 
         // my functions
-        userInfo = new UserInformation(getApplicationContext());
+        try {
+            userInfo = new UserInformation(getApplicationContext());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         this.renderCard(tv, titleTV);
 
@@ -71,9 +76,8 @@ public class MainActivity extends AppCompatActivity {
                     // calls the article class and starts the processing for the articles
                     int rnd = new Random().nextInt(topics.length);
                     System.out.println("random number and chosen topic: " + rnd + topics[rnd]);
-                    article = new Article(tv, titleTV, topics[rnd], mFunctions); // picks the first element for now, will be changed later
+                    article = new Article(tv, titleTV, topics[rnd], mFunctions, userInfo); // picks the first element for now, will be changed later
                     article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
-                    userInfo.updateUsedArticles(new String[]{article.getChosenUrl()});
                     renderCard(tv, titleTV);
                 }
                 else if(task.isComplete())
