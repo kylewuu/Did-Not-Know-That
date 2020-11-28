@@ -87,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        article = new Article(tv, titleTV, "bob", mFunctions, userInfo); // picks the first element for now, will be changed later
+//        article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+
+
     }
 
     // change this function so that it can take in array of strings

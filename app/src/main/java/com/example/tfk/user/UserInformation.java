@@ -57,7 +57,7 @@ public class UserInformation {
         // temp values for testing
         updateUsedWords(new String[]{"travelling", "trip", "travels", "trips", "Time-zones"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
-        updateUserWords(new String[]{"travel"});
+        updateUserWords(new String[]{"travel", "software"});
     }
 
     private void updateVectors(){
@@ -312,4 +312,13 @@ public class UserInformation {
     }
 
 
+    public boolean checkIfArticlesIsNotUsed(String url){
+        if(usedArticles.contains(url)) return false;
+        return true;
+    }
+
+    public boolean checkIfKeywordIsInUserWords(String word){
+        if(userWords.contains(word)) return true;
+        return false;
+    }
 }
