@@ -52,16 +52,31 @@ void ProcessDocument::resetVariables()
 
 }
 
+void ProcessDocument::deallocateVariables()
+{
+    wordFrequency.clear();
+    sentenceRanking.clear();
+    sentences = vector<string>();
+}
+
 string ProcessDocument::mainLoop(){
+
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.5 trace");
     removeSquareBrackets();
 
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.25 trace");
     removeNewLines();
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.5 trace");
     replace("&nbsp;"," ");
     replace("&amp;","&");
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.6 trace");
     removeWhiteSpace();
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.7 trace");
     breakDownSentences();
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.8 trace");
     countWordFrequency();
     rankSentences();
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "6 trace");
     return summarizer();
 }
 
@@ -116,6 +131,7 @@ void ProcessDocument::removeNewLines(){
 
 void ProcessDocument::breakDownSentences()
 {
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "61 trace");
     int sentencesCount = 2;
     int i = 0;
     while(rawDocument[i] != '\0' && rawDocument[i+1] != '\0')
@@ -125,6 +141,8 @@ void ProcessDocument::breakDownSentences()
     }
 
     string currentSentence = "";
+
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "62 trace");
 
     int sentenceVectorSize = 0;
     for(int i=0;i<rawDocument.length() - 1;i++)
@@ -137,6 +155,7 @@ void ProcessDocument::breakDownSentences()
     }
 
 
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "63 trace");
     sentences.clear();
     sentences.resize(sentenceVectorSize+1);
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize: %s",to_string(sentenceVectorSize).c_str());
@@ -161,6 +180,8 @@ void ProcessDocument::breakDownSentences()
 
     }
     sentences[j] = currentSentence;
+
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "64 trace");
 
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize (second trace): %s",to_string(sentenceVectorSize).c_str());
 
@@ -205,7 +226,7 @@ void ProcessDocument::countWordFrequency()
 
 void ProcessDocument::rankSentences()
 {
-    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "1 trace");
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "1 trace");
     for(int i=0;i<sentences.size();i++)
     {
         for (auto const& pair: wordFrequency) {
@@ -225,7 +246,7 @@ void ProcessDocument::rankSentences()
 //        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
 //    }
 
-    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "2 trace");
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "2 trace");
     int longerSentenceBias;
     for(int i=0;i<sentences.size();i++)
     {
@@ -250,13 +271,13 @@ void ProcessDocument::rankSentences()
 //    int tempScoreArray[sentenceVectorSize] = {0};
     vector<int> tempScoreArray;
     tempScoreArray.resize(sentences.size());
-
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "3 trace");
     int k = 0;
     for (auto const& pair: sentenceRanking) {
         tempScoreArray[k] = pair.second;
         k++;
     }
-
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "4 trace");
     sort(tempScoreArray.begin(), tempScoreArray.end(), greater<int>()); // FIX THIS
 
 //    for(int i=0;i<tempScoreArray.size();i++)
@@ -266,12 +287,14 @@ void ProcessDocument::rankSentences()
 
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
 
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "5 trace");
 
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
 }
 
 string ProcessDocument::summarizer() {
 
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "7 trace");
     string processedDocument = sentences[0];
     for(int i=1; i<sentences.size();i++)
     {
@@ -281,5 +304,7 @@ string ProcessDocument::summarizer() {
         }
     }
 
+    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "8 trace");
+    deallocateVariables();
     return processedDocument;
 }

@@ -23,6 +23,7 @@ public:
     void breakDownSentences();
     void countWordFrequency();
     void rankSentences();
+    void deallocateVariables();
 };
 
 

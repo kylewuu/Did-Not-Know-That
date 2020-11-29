@@ -55,7 +55,7 @@ public class UserInformation {
         userWords = new Vector<>();
 
         // temp values for testing
-        updateUsedWords(new String[]{"travelling", "trip", "travels", "trips", "Time-zones"});
+        updateUsedWords(new String[]{"travelling", "trip"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
         updateUserWords(new String[]{"travel", "software"});
     }
