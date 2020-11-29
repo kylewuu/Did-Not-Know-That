@@ -72,6 +72,7 @@ public class Article extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         // sets the texts
+        System.out.println(url);
         userInfo.updateUsedArticles(new String[]{url}); // this needs to be moved
         summarizeDocument();
 //        System.out.println(documentString);
@@ -82,7 +83,7 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     private void summarizeDocument() {
         processedDocument = ReturnProcessedDocument(documentString);
-        System.out.println(processedDocument);
+//        System.out.println(processedDocument);
     }
 
     public void getDocument() {
@@ -90,7 +91,7 @@ public class Article extends AsyncTask<Void, Void, String> {
 
             url = "https://wikipedia.org/wiki/"+this.topic;
 
-            System.out.println(url);
+//            System.out.println(url);
 
             Document document = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
                     .referrer("http://www.google.com").get();
@@ -118,6 +119,8 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     private void parsePageFound(Document document) {
         title = document.getElementById("firstHeading").text();
+
+
 
         String[] elementsToBeRemovedById = {
 //                    "bodyContent",
@@ -188,6 +191,7 @@ public class Article extends AsyncTask<Void, Void, String> {
         String s = document.html().replaceAll("\\\\n", " ");
 
         documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
+        if(documentString.indexOf("(Redirected from ") != -1) documentString = documentString.substring(documentString.indexOf(")") + 1);
     }
 
     private void parseSearchPage(){

@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void renderCard(TextView tv, TextView titleTV) {
 
+        System.out.println("Calling firebase ... ");
         findTopicThroughHTTP().addOnCompleteListener(new OnCompleteListener<String[]>() {
             @Override
             public void onComplete(@NonNull Task<String[]> task) {
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("random number and chosen topic: " + rnd + topics[rnd]);
                     article = new Article(tv, titleTV, topics[rnd], mFunctions, userInfo); // picks the first element for now, will be changed later
                     article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
-                    System.out.println("Calling firebase ... ");
                     renderCard(tv, titleTV);
                 }
                 else if(task.isComplete())
