@@ -19,6 +19,7 @@ using std::map;
 
 string rawDocument;
 vector<string> sentences;
+int sentencesVectorSize;
 map<string, int> wordFrequency;
 map<string, float> sentenceRanking;
 string stopwords[127];
@@ -26,6 +27,8 @@ float scoreCutOff;
 int numberOfSentencesToDisplay;
 
 ProcessDocument::ProcessDocument(string x){
+    resetVariables();
+
     rawDocument = x;
     string stopwordsTemp[] = {"ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than"};
     for(int i=0; i<sizeof(stopwordsTemp)/sizeof(stopwordsTemp[0]);i++)
@@ -36,8 +39,22 @@ ProcessDocument::ProcessDocument(string x){
     numberOfSentencesToDisplay = 6;
 }
 
+void ProcessDocument::resetVariables()
+{
+//    sentences.clear();
+//    sentences.resize(100);
+//    rawDocument = "";
+//    wordFrequency.clear();
+//    sentenceRanking.clear();
+//    scoreCutOff = 0;
+    sentencesVectorSize = 0;
+    rawDocument = "";
+
+}
+
 string ProcessDocument::mainLoop(){
     removeSquareBrackets();
+
     removeNewLines();
     replace("&nbsp;"," ");
     replace("&amp;","&");
@@ -108,14 +125,32 @@ void ProcessDocument::breakDownSentences()
     }
 
     string currentSentence = "";
+
+    int sentenceVectorSize = 0;
+    for(int i=0;i<rawDocument.length() - 1;i++)
+    {
+        if(rawDocument[i] == '.' && isspace(rawDocument[i+1]) )
+        {
+            sentenceVectorSize ++;
+        }
+
+    }
+
+
+    sentences.clear();
+    sentences.resize(sentenceVectorSize+1);
+//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize: %s",to_string(sentenceVectorSize).c_str());
+
     int j = 0;
+
 
     for(int i=0;i<rawDocument.length() - 1;i++)
     {
         if(rawDocument[i] == '.' && isspace(rawDocument[i+1]) )
         {
             currentSentence += '.';
-            sentences.push_back(currentSentence);
+            sentences[j] = currentSentence;
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "sentence: %s, j: %s",sentences[j].c_str(), to_string(j).c_str());
             currentSentence = "";
             j++;
         }
@@ -125,7 +160,10 @@ void ProcessDocument::breakDownSentences()
         }
 
     }
-    sentences.push_back(currentSentence);
+    sentences[j] = currentSentence;
+
+//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize (second trace): %s",to_string(sentenceVectorSize).c_str());
+
 
 //    for(int i=0;i<sentencesCount;i++)
 //    {
@@ -167,6 +205,7 @@ void ProcessDocument::countWordFrequency()
 
 void ProcessDocument::rankSentences()
 {
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "1 trace");
     for(int i=0;i<sentences.size();i++)
     {
         for (auto const& pair: wordFrequency) {
@@ -186,6 +225,7 @@ void ProcessDocument::rankSentences()
 //        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
 //    }
 
+    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "2 trace");
     int longerSentenceBias;
     for(int i=0;i<sentences.size();i++)
     {
@@ -197,15 +237,35 @@ void ProcessDocument::rankSentences()
         if(longerSentenceBias > 1) sentenceRanking[sentences[i]] /= (0.75 * longerSentenceBias);
     }
 
-    int tempScoreArray[sentences.size()];
+    int sentenceVectorSize = 0;
+    for(int i=0;i<rawDocument.length() - 1;i++)
+    {
+        if(rawDocument[i] == '.' && isspace(rawDocument[i+1]) )
+        {
+            sentenceVectorSize ++;
+        }
+
+    }
+
+//    int tempScoreArray[sentenceVectorSize] = {0};
+    vector<int> tempScoreArray;
+    tempScoreArray.resize(sentences.size());
+
     int k = 0;
     for (auto const& pair: sentenceRanking) {
         tempScoreArray[k] = pair.second;
         k++;
     }
-    sort(tempScoreArray, tempScoreArray + sentences.size(), greater<int>());
+
+    sort(tempScoreArray.begin(), tempScoreArray.end(), greater<int>()); // FIX THIS
+
+//    for(int i=0;i<tempScoreArray.size();i++)
+//    {
+//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "number (sorted): %s", to_string(tempScoreArray[i]).c_str());
+//    }
 
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
+
 
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
 }

@@ -74,7 +74,7 @@ public class Article extends AsyncTask<Void, Void, String> {
         // sets the texts
         userInfo.updateUsedArticles(new String[]{url}); // this needs to be moved
         summarizeDocument();
-        System.out.println(documentString);
+//        System.out.println(documentString);
         tv.setText(processedDocument);
         titleTV.setText(title);
 
@@ -82,6 +82,7 @@ public class Article extends AsyncTask<Void, Void, String> {
 
     private void summarizeDocument() {
         processedDocument = ReturnProcessedDocument(documentString);
+        System.out.println(processedDocument);
     }
 
     public void getDocument() {
@@ -257,7 +258,6 @@ public class Article extends AsyncTask<Void, Void, String> {
         for (String name: linksRankings.keySet()){
             String key = name.toString();
             String value = linksRankings.get(name).toString();
-//            System.out.println(key + " " + value);
             String tempUrl =  "https://wikipedia.org/" + key;
             if(linksRankings.get(name) >= tempMaxScore && userInfo.checkIfArticlesIsNotUsed(tempUrl)){
                 url = tempUrl;

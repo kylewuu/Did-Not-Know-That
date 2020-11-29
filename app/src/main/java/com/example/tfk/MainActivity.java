@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("random number and chosen topic: " + rnd + topics[rnd]);
                     article = new Article(tv, titleTV, topics[rnd], mFunctions, userInfo); // picks the first element for now, will be changed later
                     article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+                    System.out.println("Calling firebase ... ");
                     renderCard(tv, titleTV);
                 }
                 else if(task.isComplete())
@@ -89,6 +90,13 @@ public class MainActivity extends AppCompatActivity {
 
 //        article = new Article(tv, titleTV, "bob", mFunctions, userInfo); // picks the first element for now, will be changed later
 //        article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+//        try {
+//            TimeUnit.SECONDS.sleep(15);
+//            renderCard(tv, titleTV);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
 
 
     }

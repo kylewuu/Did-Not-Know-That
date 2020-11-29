@@ -1,6 +1,10 @@
 #include <jni.h>
 #include <string>
 #include "ProcessDocument/ProcessDocument.h"
+#include <android/log.h>
+#include <map>
+
+#define APPNAME "MyApp"
 
 string jstringToString(JNIEnv *pEnv, jstring pJstring);
 
@@ -37,9 +41,10 @@ extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_example_tfk_webscraping_Article_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
     string cppString = jstringToString(env, x);
+//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",cppString.c_str());
     ProcessDocument processedDocument{cppString};
     string newString = processedDocument.mainLoop();
-
+//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",newString.c_str());
     return env->NewStringUTF(newString.c_str());
 }
 

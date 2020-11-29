@@ -14,6 +14,7 @@ class ProcessDocument {
 public:
     ProcessDocument(string x);
     string mainLoop();
+    void resetVariables();
     string summarizer();
     void removeSquareBrackets();
     void replace(string original, string replacement);
