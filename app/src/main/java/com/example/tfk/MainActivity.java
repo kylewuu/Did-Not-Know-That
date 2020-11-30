@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.tfk.UI.CardHandler;
 import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Article;
 import com.google.android.gms.tasks.Continuation;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Article article;
     private FirebaseFunctions mFunctions;
     private UserInformation userInfo;
+    private CardHandler cardHandler;
 
 
     // Used to load the 'native-lib' library on application startup.
@@ -47,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mFunctions = FirebaseFunctions.getInstance();
 
-        // Example of a call to a native method
+        // Setting up the cards
         TextView tv = findViewById(R.id.sample_text);
         TextView titleTV = findViewById(R.id.title);
+
+        cardHandler = new CardHandler(tv, titleTV); // should pass in the cards themselves instead of just the titles and such
+
 
         // my functions
         try {
@@ -87,15 +92,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-//        article = new Article(tv, titleTV, "bob", mFunctions, userInfo); // picks the first element for now, will be changed later
-//        article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
-//        try {
-//            TimeUnit.SECONDS.sleep(15);
-//            renderCard(tv, titleTV);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
 
 
