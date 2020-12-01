@@ -56,13 +56,15 @@ public class MainActivity extends AppCompatActivity {
         cardHandler = new CardHandler(tv, titleTV); // should pass in the cards themselves instead of just the titles and such
 
 
-        // my functions
+        // get user information
         try {
             userInfo = new UserInformation(getApplicationContext());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+
+        // old render card - will be replaced by new one
         this.renderCard(tv, titleTV);
 
     }
