@@ -49,11 +49,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mFunctions = FirebaseFunctions.getInstance();
 
-        // Setting up the cards
-        TextView tv = findViewById(R.id.sample_text);
-        TextView titleTV = findViewById(R.id.title);
+        // Setting up the cards (old)
+//        TextView tv = findViewById(R.id.sample_text);
+//        TextView titleTV = findViewById(R.id.title);
 
-        cardHandler = new CardHandler(tv, titleTV); // should pass in the cards themselves instead of just the titles and such
+
 
 
         // get user information
@@ -63,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
 
         // old render card - will be replaced by new one
-        this.renderCard(tv, titleTV);
+//        this.renderCard(tv, titleTV);
 
     }
 
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // change this function so that it can take in array of strings
     private Task<String[]> findTopicThroughHTTP() {
         // Create the arguments to the callable function.
         Map<String, Object> data = new HashMap<>();
