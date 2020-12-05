@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.tfk.R;
@@ -11,16 +12,20 @@ import com.example.tfk.user.UserInformation;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CardHandler {
 
-    private ArrayList<String> cards;
-    private ArrayAdapter<String> arrayAdapter;
+//    private ArrayList<String> cards;
+    private Cards cardsData[];
+    private ArrayAdapterCustom arrayAdapter;
     private int i;
 
     Context mContext;
     Activity activity;
     UserInformation userInfo;
+
+    List<Cards> cards;
 
     public CardHandler(Context context, UserInformation userInformation) {
 
@@ -31,21 +36,12 @@ public class CardHandler {
         activity.setContentView(R.layout.activity_main);
 
 
+        cards = new ArrayList<Cards>();
+        arrayAdapter = new ArrayAdapterCustom(mContext, R.layout.card, cards );
 
-        cards = new ArrayList<>();
-        // two cards need to be in the array to begin with, or else it will not work properly
-        cards.add(userInfo.getTargetWord());
-        cards.add(userInfo.getTargetWord());
-//        cards.add("c");
-//        cards.add("python");
-//        cards.add("java");
-//        cards.add("html");
-//        cards.add("c++");
-//        cards.add("css");
-//        cards.add("javascript");
 
-        arrayAdapter = new ArrayAdapter<>(mContext, R.layout.card, R.id.helloText, cards );
-
+        cards.add(new Cards("Title", "Body", "www.website.com"));
+        cards.add(new Cards("Title", "Body", "www.website.com"));
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
 
@@ -78,7 +74,8 @@ public class CardHandler {
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
 //                cards.add("XML ".concat(String.vcardsueOf(i)));
-                cards.add(userInfo.getTargetWord());
+
+                cards.add(new Cards("Title", "Body", "www.website.com"));
                 arrayAdapter.notifyDataSetChanged();
                 Log.d("LIST", "notified");
                 i++;
