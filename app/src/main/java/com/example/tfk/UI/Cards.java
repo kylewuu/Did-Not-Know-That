@@ -5,10 +5,10 @@ public class Cards {
     private String body;
     private String link;
 
-    public Cards(String title, String body, String link){
-        this.title = title;
-        this.body = body;
-        this.link = link;
+    public Cards(String[] elements){
+        this.title = elements[0];
+        this.body = elements[1];
+        this.link = elements[2];
     }
 
     public String getTitle(){

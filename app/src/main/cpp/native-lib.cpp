@@ -39,7 +39,7 @@ Java_com_example_tfk_MainActivity_DisplayText(
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_tfk_webscraping_Article_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
+Java_com_example_tfk_webscraping_Articles_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
     string cppString = jstringToString(env, x);
 //    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",cppString.c_str());
     ProcessDocument processedDocument{cppString};

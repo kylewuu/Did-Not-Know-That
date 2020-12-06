@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.example.tfk.UI.CardHandler;
 import com.example.tfk.user.UserInformation;
-import com.example.tfk.webscraping.Article;
+import com.example.tfk.webscraping.Articles;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,20 +19,14 @@ import com.google.firebase.functions.HttpsCallableResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Article article;
+    private Articles article;
     private FirebaseFunctions mFunctions;
     private UserInformation userInfo;
     private CardHandler cardHandler;
@@ -49,24 +43,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mFunctions = FirebaseFunctions.getInstance();
 
-        // Setting up the cards (old)
-//        TextView tv = findViewById(R.id.sample_text);
-//        TextView titleTV = findViewById(R.id.title);
-
-
-
 
         // get user information
         try {
-            userInfo = new UserInformation(getApplicationContext());
+            userInfo = new UserInformation(getApplicationContext(), mFunctions);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
-
-        // old render card - will be replaced by new one
-//        this.renderCard(tv, titleTV);
+        new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
 
     }
 
@@ -82,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
                     userInfo.updateUserWords(topics);
 
 
-                    // calls the article class and starts the processing for the articles
+                    // calls the article class and starts the processing for the article
                     int rnd = new Random().nextInt(topics.length);
                     System.out.println("random number and chosen topic: " + rnd + topics[rnd]);
-                    article = new Article(tv, titleTV, topics[rnd], mFunctions, userInfo); // picks the first element for now, will be changed later
-                    article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
-                    renderCard(tv, titleTV);
+//                    article = new Articles(tv, titleTV, topics[rnd], mFunctions, userInfo); // picks the first element for now, will be changed later
+//                    article.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR); // this executes the asynctask
+
                 }
                 else if(task.isComplete())
                 {

@@ -9,10 +9,13 @@ import android.widget.Toast;
 
 import com.example.tfk.R;
 import com.example.tfk.user.UserInformation;
+import com.example.tfk.webscraping.Articles;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CardHandler {
 
@@ -24,6 +27,7 @@ public class CardHandler {
     Context mContext;
     Activity activity;
     UserInformation userInfo;
+    Articles articles;
 
     List<Cards> cards;
 
@@ -38,10 +42,12 @@ public class CardHandler {
 
         cards = new ArrayList<Cards>();
         arrayAdapter = new ArrayAdapterCustom(mContext, R.layout.card, cards );
+        articles = new Articles(userInfo);
 
 
-        cards.add(new Cards("Title", "Body", "www.website.com"));
-        cards.add(new Cards("Title", "Body", "www.website.com"));
+        cards.add(new Cards(articles.getAllArticlesElements()));
+        cards.add(new Cards(articles.getAllArticlesElements()));
+
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
 
@@ -75,11 +81,12 @@ public class CardHandler {
                 // Ask for more data here
 //                cards.add("XML ".concat(String.vcardsueOf(i)));
 
-                cards.add(new Cards("Title", "Body", "www.website.com"));
+                addNewCard();
+                if(cards.size() < 2) cards.add(new Cards(articles.getAllArticlesElements()));
                 arrayAdapter.notifyDataSetChanged();
-                Log.d("LIST", "notified");
+
                 i++;
-                if(cards.size() < 5) onAdapterAboutToEmpty(cards.size());
+                if(cards.size() < 5) addNewCard();
             }
 
             @Override
@@ -101,6 +108,18 @@ public class CardHandler {
         });
 
     }
+
+    private void addNewCard(){
+        ExecutorService service = Executors.newFixedThreadPool(4);
+        service.submit(new Runnable() {
+            public void run() {
+                Log.d("LIST", "Adding new card");
+                cards.add(new Cards(articles.getAllArticlesElements()));
+                if(cards.size() < 5) addNewCard();
+            }
+        });
+    }
+
 
 //    static void makeToast(Context ctx, String s){
 //        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
