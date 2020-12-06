@@ -79,7 +79,7 @@ public class UserInformation {
         userWords = new Vector<>();
         userArticles = new Vector<>();
 
-        // temp values for testing
+        // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
         updateUserWords(new String[]{"travel", "software", "anti-plague", "vancouver-kingsway", "military", "university", "football", "production", "announced", "unforced", "radio"});
@@ -401,7 +401,6 @@ public class UserInformation {
 
     public synchronized String getTargetArticle(){
         // add chosen word to usedWords and remove from userWords
-
         String[] array = userArticles.toArray(new String[userArticles.size()]);
         int rnd = new Random().nextInt(array.length);
         String ret = array[rnd];
@@ -423,7 +422,7 @@ public class UserInformation {
     }
 
     private synchronized void replenishWords(){
-        if(userWords.size() < 10) {
+        if(userWords.size() < 10 && userWords.size() > 0) {
             Map<String, Object> data = new HashMap<>();
             String targetWord = this.getRandomUserWord();
 //            System.out.println("Replenshing words ... using: " + targetWord);
@@ -461,16 +460,23 @@ public class UserInformation {
                         }
                     });;
         }
+        else if(userWords.size() < 1){
+            // call firebase function to get a random word, then call replenishWords();
+
+        }
     }
 
     public synchronized void replenishArticles() {
-        if(userArticles.size() < 5) {
+        if(userArticles.size() < 5 && userWords.size() > 0) {
             String topic = this.getTargetWord();
             String url = "https://en.wikipedia.org/w/index.php?search="+topic+"&title=Special%3ASearch&go=Go&ns0=1";
 
             (new FindMoreArticles(this, url)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
+        else if(userWords.size() < 1){
+            replenishWords();
+        }
 
     }
 

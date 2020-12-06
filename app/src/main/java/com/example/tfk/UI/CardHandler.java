@@ -93,8 +93,6 @@ public class CardHandler {
 
 
                 addNewCard();
-
-//                addNewCard();
                 arrayAdapter.notifyDataSetChanged();
                 i++;
                 if(cards.size() < maxSizeOfCardsDeck && userInfo.userArticles.size() >=1 ) addNewCard();
