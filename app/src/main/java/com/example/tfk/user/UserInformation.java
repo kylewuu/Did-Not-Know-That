@@ -39,6 +39,8 @@ public class UserInformation {
     public JSONObject config;
     public Context context;
     private FirebaseFunctions mFunctions;
+    private int semaphore;
+    private int semaphoreLockout;
 
     public UserInformation(Context applicationContext, FirebaseFunctions mFunctions) throws JSONException {
         // get username
@@ -47,6 +49,8 @@ public class UserInformation {
         this.mFunctions = mFunctions;
         checkConfig();
         updateVectors();
+        semaphore = 0;
+        semaphoreLockout = 2;
     }
 
     private void checkConfig() throws JSONException {
@@ -422,7 +426,8 @@ public class UserInformation {
     }
 
     public synchronized void replenishWords(){
-        if(userWords.size() < 10 && userWords.size() > 0) {
+        if(userWords.size() < 10 && userWords.size() > 0 && semaphore < semaphoreLockout) {
+            semaphore ++;
             Map<String, Object> data = new HashMap<>();
             String targetWord = this.getRandomUserWord();
 //            System.out.println("Replenshing words ... using: " + targetWord);
@@ -451,6 +456,7 @@ public class UserInformation {
                                 System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(topics));
                                 updateUserWords(topics);
                                 replenishArticles();
+                                semaphore --;
 
                             }
                             else if(task.isComplete())

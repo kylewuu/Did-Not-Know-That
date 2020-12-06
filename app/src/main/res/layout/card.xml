@@ -19,41 +19,51 @@
         app:cardCornerRadius="15dp"
         android:id="@+id/cardView">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/rounded_corner">
-
-            <TextView
-                android:id="@+id/titleText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="top"
-                android:textColor="@android:color/white"
-                android:textSize="40sp"
-                tools:text="hello_world" />
-
-            <TextView
-                android:id="@+id/bodyText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
-                tools:text="hello_world" />
-
-            <TextView
-                android:id="@+id/linkText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal|bottom"
-                android:textColor="@android:color/white"
-                android:textSize="10sp"
-                tools:text="hello_world" />
+                android:background="@drawable/rounded_corner"
+                android:orientation="vertical"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="6dp">
 
 
+                <TextView
+                    android:id="@+id/titleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:gravity=""
+                    android:textColor="@android:color/white"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMaxTextSize="100sp"
+                    android:autoSizeStepGranularity="2sp"
+                    tools:text="hello_world"
+                    android:layout_marginBottom="7dp"/>
 
-        </FrameLayout>
+
+                <TextView
+                    android:id="@+id/bodyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="555dp"
+                    android:gravity=""
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    tools:text="hello_world" />
+
+
+                <TextView
+                    android:id="@+id/linkText"
+                    android:layout_width="match_parent"
+                    android:layout_height="23dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="10sp"
+                    tools:text="hello_world"
+                    android:layout_marginTop="25dp"/>
+
+
+            </LinearLayout>
+
 
 
 
