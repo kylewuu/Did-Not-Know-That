@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CardHandler {
 
@@ -78,15 +79,15 @@ public class CardHandler {
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                // Ask for more data here
-//                cards.add("XML ".concat(String.vcardsueOf(i)));
 
-                addNewCard();
-                if(cards.size() < 2) cards.add(new Cards(articles.getAllArticlesElements()));
+
+                    if(userInfo.userArticles.size() == 0 && cards.size() <= 1) waitToAddNewCard();
+                    else addNewCard();
+
+//                addNewCard();
                 arrayAdapter.notifyDataSetChanged();
-
                 i++;
-                if(cards.size() < 5) addNewCard();
+                if(cards.size() < 5 && userInfo.userArticles.size() >=1 ) addNewCard();
             }
 
             @Override
@@ -107,6 +108,8 @@ public class CardHandler {
             }
         });
 
+
+
     }
 
     private void addNewCard(){
@@ -114,10 +117,31 @@ public class CardHandler {
         service.submit(new Runnable() {
             public void run() {
                 Log.d("LIST", "Adding new card");
-                cards.add(new Cards(articles.getAllArticlesElements()));
-                if(cards.size() < 5) addNewCard();
+                if(userInfo.userArticles.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements()));
+                if(cards.size() < 5 && userInfo.userArticles.size() >=1 ) addNewCard();
             }
         });
+    }
+
+    private void waitToAddNewCard(){
+//        ExecutorService service = Executors.newFixedThreadPool(4);
+//        service.submit(new Runnable() {
+//            public void run() {
+//
+//            }
+//
+//        });
+
+        while(true){
+            try {
+                if(userInfo.userArticles.size() < 2 && cards.size() == 0) throw new Exception("Nothing left to display");
+//                        addNewCard();
+                break;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        addNewCard();
     }
 
 

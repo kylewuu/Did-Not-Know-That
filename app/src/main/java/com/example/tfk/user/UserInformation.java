@@ -377,13 +377,13 @@ public class UserInformation {
         return userWords;
     }
 
-    public String getTargetWord(){
+    public synchronized String getTargetWord(){
         // add chosen word to usedWords and remove from userWords
         String[] array = userWords.toArray(new String[userWords.size()]);
         int rnd = new Random().nextInt(array.length);
         String ret = array[rnd];
         updateUsedWords(new String[]{array[rnd]});
-        userWords.remove(array[rnd]); // this should be removed since we want to keep the word
+        userWords.remove(array[rnd]);
         writeToUserWords();
         replenishWords();
         return ret;
@@ -394,12 +394,12 @@ public class UserInformation {
         int rnd = new Random().nextInt(array.length);
         String ret = array[rnd];
         updateUsedWords(new String[]{array[rnd]});
-        userWords.remove(array[rnd]); // this should be removed since we want to keep the word
+        userWords.remove(array[rnd]);
         writeToUserWords();
         return ret;
     }
 
-    public String getTargetArticle(){
+    public synchronized String getTargetArticle(){
         // add chosen word to usedWords and remove from userWords
 
         String[] array = userArticles.toArray(new String[userArticles.size()]);
@@ -422,7 +422,7 @@ public class UserInformation {
         return ret.toString();
     }
 
-    private void replenishWords(){
+    private synchronized void replenishWords(){
         if(userWords.size() < 10) {
             Map<String, Object> data = new HashMap<>();
             String targetWord = this.getRandomUserWord();
@@ -451,6 +451,7 @@ public class UserInformation {
                                 String[] topics = task.getResult();
                                 System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(topics));
                                 updateUserWords(topics);
+                                replenishArticles();
 
                             }
                             else if(task.isComplete())
@@ -462,7 +463,7 @@ public class UserInformation {
         }
     }
 
-    public void replenishArticles() {
+    public synchronized void replenishArticles() {
         if(userArticles.size() < 5) {
             String topic = this.getTargetWord();
             String url = "https://en.wikipedia.org/w/index.php?search="+topic+"&title=Special%3ASearch&go=Go&ns0=1";

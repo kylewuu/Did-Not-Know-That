@@ -53,7 +53,7 @@ public class Articles{
 //
 //    }
 
-    public String[] getAllArticlesElements() {
+    public synchronized String[] getAllArticlesElements() {
         String[] ret = new String[3]; // title, body, link
         String url = userInfo.getTargetArticle();
         ret[2] = url;
