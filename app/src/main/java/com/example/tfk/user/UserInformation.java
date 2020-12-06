@@ -421,7 +421,7 @@ public class UserInformation {
         return ret.toString();
     }
 
-    private synchronized void replenishWords(){
+    public synchronized void replenishWords(){
         if(userWords.size() < 10 && userWords.size() > 0) {
             Map<String, Object> data = new HashMap<>();
             String targetWord = this.getRandomUserWord();
