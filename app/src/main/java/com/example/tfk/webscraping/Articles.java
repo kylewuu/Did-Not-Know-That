@@ -53,7 +53,7 @@ public class Articles{
 //
 //    }
 
-    public synchronized String[] getAllArticlesElements() {
+    public synchronized String[] getAllArticlesElements(UserInformation userInfo) {
         String[] ret = new String[3]; // title, body, link
         String url = userInfo.getTargetArticle();
         ret[2] = url;
@@ -63,7 +63,7 @@ public class Articles{
 //                    .referrer("http://www.google.com").get();
 
             System.out.println("Grabbing document from url: " + url);
-            Document document = (new GetAllArticleElements()).execute(url).get();
+            Document document = (new GetAllArticleElements(url, userInfo)).execute().get();
 
             ret[0] = parseTitle(document);
             ret[1] = parseBody(document);

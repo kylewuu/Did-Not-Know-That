@@ -3,9 +3,12 @@ package com.example.tfk.UI;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.tfk.R;
 import com.example.tfk.user.UserInformation;
@@ -32,7 +35,11 @@ public class CardHandler {
 
     List<Cards> cards;
 
+    int maxSizeOfCardsDeck;
+
     public CardHandler(Context context, UserInformation userInformation) {
+
+        maxSizeOfCardsDeck = 8;
 
         userInfo = userInformation;
         mContext = context;
@@ -46,8 +53,11 @@ public class CardHandler {
         articles = new Articles(userInfo);
 
 
-        cards.add(new Cards(articles.getAllArticlesElements()));
-        cards.add(new Cards(articles.getAllArticlesElements()));
+        if(userInfo.userArticles.size() > 0) {
+            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+            if(userInfo.userArticles.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+        }
+        else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
 
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
@@ -59,6 +69,7 @@ public class CardHandler {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 Log.d("Number of cards left", String.valueOf(cards.size()));
+                if(cards.size() <= 1) cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
                 cards.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -81,13 +92,12 @@ public class CardHandler {
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
 
 
-                    if(userInfo.userArticles.size() == 0 && cards.size() <= 1) waitToAddNewCard();
-                    else addNewCard();
+                addNewCard();
 
 //                addNewCard();
                 arrayAdapter.notifyDataSetChanged();
                 i++;
-                if(cards.size() < 5 && userInfo.userArticles.size() >=1 ) addNewCard();
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.userArticles.size() >=1 ) addNewCard();
             }
 
             @Override
@@ -109,7 +119,6 @@ public class CardHandler {
         });
 
 
-
     }
 
     private void addNewCard(){
@@ -117,32 +126,12 @@ public class CardHandler {
         service.submit(new Runnable() {
             public void run() {
                 Log.d("LIST", "Adding new card");
-                if(userInfo.userArticles.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements()));
-                if(cards.size() < 5 && userInfo.userArticles.size() >=1 ) addNewCard();
+                if(userInfo.userArticles.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.userArticles.size() >=1 ) addNewCard();
             }
         });
     }
 
-    private void waitToAddNewCard(){
-//        ExecutorService service = Executors.newFixedThreadPool(4);
-//        service.submit(new Runnable() {
-//            public void run() {
-//
-//            }
-//
-//        });
-
-        while(true){
-            try {
-                if(userInfo.userArticles.size() < 2 && cards.size() == 0) throw new Exception("Nothing left to display");
-//                        addNewCard();
-                break;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        addNewCard();
-    }
 
 
 //    static void makeToast(Context ctx, String s){
