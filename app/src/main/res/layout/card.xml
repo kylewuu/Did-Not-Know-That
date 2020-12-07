@@ -49,7 +49,12 @@
                     android:gravity=""
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
-                    tools:text="hello_world" />
+                    tools:text="hello_world"
+                    android:clickable="true"
+                    android:onClick="bodyTextOnClick"
+                    android:ellipsize="end"
+                    android:maxLines="31"
+                    />
 
 
                 <TextView

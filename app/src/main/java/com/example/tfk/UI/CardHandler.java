@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -25,7 +26,7 @@ public class CardHandler {
 
 //    private ArrayList<String> cards;
     private Cards cardsData[];
-    private ArrayAdapterCustom arrayAdapter;
+    public ArrayAdapterCustom arrayAdapter;
     private int i;
 
     Context mContext;
@@ -33,7 +34,7 @@ public class CardHandler {
     UserInformation userInfo;
     Articles articles;
 
-    List<Cards> cards;
+    public List<Cards> cards;
 
     int maxSizeOfCardsDeck;
 
@@ -101,6 +102,7 @@ public class CardHandler {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
+//                Toast.makeText(mContext, "Scrolling!", Toast.LENGTH_SHORT).show();
 //                View view = flingContainer.getSelectedView();
 //                view.findViewById(R.id.item_swipe_right_indicator).setcardspha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
 //                view.findViewById(R.id.item_swipe_left_indicator).setcardspha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
@@ -110,12 +112,12 @@ public class CardHandler {
 
 
         // Optioncardsly add an OnItemClickListener
-        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClicked(int itemPosition, Object dataObject) {
-                Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClicked(int itemPosition, Object dataObject) {
+//                Toast.makeText(mContext, "Clicked!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 
     }
@@ -130,6 +132,7 @@ public class CardHandler {
             }
         });
     }
+
 
 
 
