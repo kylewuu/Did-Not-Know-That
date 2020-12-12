@@ -2,7 +2,9 @@ package com.example.tfk.UI;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.text.Layout;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import com.example.tfk.R;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
     Context mContext;
@@ -21,15 +25,15 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
     public TextView[] bodyArray;
 
 
-    public ArrayAdapterCustom(Context context, int resourceId, List<Cards> items){
+    public ArrayAdapterCustom(Context context, int resourceId, List<Cards> items) {
         super(context, resourceId, items);
         bodyArray = new TextView[100];
     }
 
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         Cards card_item = getItem(position);
 
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.card, parent, false);
         }
 
@@ -41,60 +45,118 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
         title.setText(card_item.getTitle());
 //        body.setText(card_item.getBody()[0]);
-        splitUpBodyText(body, card_item);
+        splitUpBodyText(body, card_item, card_item.getBody()[0]);
         link.setText(card_item.getLink());
 
 
         return convertView;
     }
 
-    public void splitUpBodyText(TextView body, Cards card_item) {
 
-        boolean[] bodyTextWillFitFlag = {false};
-        boolean[] loopFinishedFlag = {true};
-        String[] bodyText = {card_item.getBody()[0]};
+    private void splitUpBodyText(TextView body, Cards card_item, String bodyText) {
+        body.setText(bodyText);
+        final String[] bodyTextFinal = {bodyText};
 
-//        while(!bodyTextWillFitFlag[0]){
+        ViewTreeObserver vto;
+        vto = body.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+          @Override
+          public void onGlobalLayout() {
+              SplitUpBodyText split = new SplitUpBodyText(body, card_item, bodyText);
+              split.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+          }
 
-
-//            if(loopFinishedFlag[0]){
-                loopFinishedFlag[0] = false;
-                System.out.println("Subtracting");
-
-                body.setText(bodyText[0]);
-                ViewTreeObserver vto = body.getViewTreeObserver();
-                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        Layout layout = body.getLayout();
-
-                        loopFinishedFlag[0] = true;
-                        if(layout != null) {
-                            int lines = layout.getLineCount();
-                            if(lines > 0) {
-                                int ellipsisCount = layout.getEllipsisCount(lines - 1);
-                                if ( ellipsisCount > 0) {
-                                    bodyText[0] = bodyText[0].substring(0, bodyText[0].length() -1 );
-                                    System.out.println("Subtracted");
-
-                                }
-                                else bodyTextWillFitFlag[0] = true;
-                            }
-                            else bodyTextWillFitFlag[0] = true;
-                        }
-                        else bodyTextWillFitFlag[0] = true;
-                    }
-                });
-
-//            }
-
-//        }
-
-        System.out.println("BodyText trimmed is: " + bodyText[0]);
-
+        });
 
 
     }
 
 
+//        ExecutorService service = Executors.newFixedThreadPool(4);
+//        service.submit(new Runnable() {
+//        new Thread(new Runnable() {
+//            public void run() {
+
+//                body.setText(bodyText);
+//                final String[] bodyTextFinal = {bodyText};
+//
+//                ViewTreeObserver vto = body.getViewTreeObserver();
+//                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        Layout layout;
+//                        String bodyText = bodyTextFinal[0];
+//
+//                        while (true) {
+//                            body.setText(bodyText);
+//                            layout = body.getLayout();
+//                            if (layout != null) {
+//                                int lines = layout.getLineCount();
+//                                if (lines > 0) {
+//                                    int ellipsisCount = layout.getEllipsisCount(lines - 1);
+//                                    if (ellipsisCount > 0) {
+//
+//                                        bodyText = bodyText.substring(0, bodyText.length() - 1);
+////                                System.out.println("Subtracted text: " + bodyText);
+//
+//
+//                                    } else break;
+//
+//                                }
+//
+//                            }
+//
+//                        }
+//
+//                    }
+//                });
+
+//            }
+//        }).start();
+//        }
+//    }
+//
+//    public void splitUpBodyText(TextView body, Cards card_item, String bodyText) {
+//
+//
+//        body.setText(bodyText);
+//        final String[] bodyTextFinal = {bodyText};
+//
+//        ViewTreeObserver vto = body.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                Layout layout = body.getLayout();
+//                String bodyText = bodyTextFinal[0];
+//
+//                while(true){
+//                    body.setText(bodyText);
+//                    layout = body.getLayout();
+//                    if(layout != null) {
+//                        int lines = layout.getLineCount();
+//                        if(lines > 0) {
+//                            int ellipsisCount = layout.getEllipsisCount(lines - 1);
+//                            if ( ellipsisCount > 0) {
+//
+//                                bodyText = bodyText.substring(0, bodyText.length() - 20 );
+////                                System.out.println("Subtracted text: " + bodyText);
+//
+//
+//                            }
+//
+//                            else break;
+//
+//                        }
+//
+//                    }
+//
+//                }
+//
+//            }
+//        });
+//
+//
+//    }
+//
+//
 }

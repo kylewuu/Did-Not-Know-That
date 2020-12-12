@@ -23,8 +23,6 @@ public class Cards {
         return this.link;
     }
 
-    public void setBody(String[] bodyArray){
-        this.body = bodyArray;
-    }
+
 
 }
