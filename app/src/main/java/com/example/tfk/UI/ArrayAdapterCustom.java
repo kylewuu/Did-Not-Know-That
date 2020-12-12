@@ -60,103 +60,15 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         ViewTreeObserver vto;
         vto = body.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override
-          public void onGlobalLayout() {
-              SplitUpBodyText split = new SplitUpBodyText(body, card_item, bodyText);
-              split.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-          }
+            @Override
+            public void onGlobalLayout() {
+                SplitUpBodyText split = new SplitUpBodyText(body, card_item, bodyText);
+                split.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
 
         });
 
 
     }
 
-
-//        ExecutorService service = Executors.newFixedThreadPool(4);
-//        service.submit(new Runnable() {
-//        new Thread(new Runnable() {
-//            public void run() {
-
-//                body.setText(bodyText);
-//                final String[] bodyTextFinal = {bodyText};
-//
-//                ViewTreeObserver vto = body.getViewTreeObserver();
-//                vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        Layout layout;
-//                        String bodyText = bodyTextFinal[0];
-//
-//                        while (true) {
-//                            body.setText(bodyText);
-//                            layout = body.getLayout();
-//                            if (layout != null) {
-//                                int lines = layout.getLineCount();
-//                                if (lines > 0) {
-//                                    int ellipsisCount = layout.getEllipsisCount(lines - 1);
-//                                    if (ellipsisCount > 0) {
-//
-//                                        bodyText = bodyText.substring(0, bodyText.length() - 1);
-////                                System.out.println("Subtracted text: " + bodyText);
-//
-//
-//                                    } else break;
-//
-//                                }
-//
-//                            }
-//
-//                        }
-//
-//                    }
-//                });
-
-//            }
-//        }).start();
-//        }
-//    }
-//
-//    public void splitUpBodyText(TextView body, Cards card_item, String bodyText) {
-//
-//
-//        body.setText(bodyText);
-//        final String[] bodyTextFinal = {bodyText};
-//
-//        ViewTreeObserver vto = body.getViewTreeObserver();
-//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//            @Override
-//            public void onGlobalLayout() {
-//                Layout layout = body.getLayout();
-//                String bodyText = bodyTextFinal[0];
-//
-//                while(true){
-//                    body.setText(bodyText);
-//                    layout = body.getLayout();
-//                    if(layout != null) {
-//                        int lines = layout.getLineCount();
-//                        if(lines > 0) {
-//                            int ellipsisCount = layout.getEllipsisCount(lines - 1);
-//                            if ( ellipsisCount > 0) {
-//
-//                                bodyText = bodyText.substring(0, bodyText.length() - 20 );
-////                                System.out.println("Subtracted text: " + bodyText);
-//
-//
-//                            }
-//
-//                            else break;
-//
-//                        }
-//
-//                    }
-//
-//                }
-//
-//            }
-//        });
-//
-//
-//    }
-//
-//
 }

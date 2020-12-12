@@ -59,10 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void bodyTextOnClick(View v){
+        // testing stuff, can be removed
 //        cardHandler.cards.set(0, new Cards(new String[]{"test", "test", "test"}));
 //        cardHandler.cards.remove(0);
 //        cardHandler.arrayAdapter.notifyDataSetChanged();
-//        cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getBody()[1]); // THIS NEEDS TO BE CHANGED INTO CYCLING THROUGH ALL OF THE PAGES
+
+
+        cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getNextCard());
     }
 
 
