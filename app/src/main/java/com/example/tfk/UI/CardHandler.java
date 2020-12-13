@@ -57,7 +57,7 @@ public class CardHandler {
         if(userInfo.userArticles.size() > 0) {
             cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
             if(userInfo.userArticles.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-            userInfo.replenishWords();
+            userInfo.replenishWordsUsingUserWord();
         }
         else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
 

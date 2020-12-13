@@ -389,7 +389,7 @@ public class UserInformation {
         updateUsedWords(new String[]{array[rnd]});
         userWords.remove(array[rnd]);
         writeToUserWords();
-        replenishWords();
+        replenishWordsUsingUserWord();
         return ret;
     }
 
@@ -425,7 +425,7 @@ public class UserInformation {
         return ret.toString();
     }
 
-    public synchronized void replenishWords(){
+    public synchronized void replenishWordsUsingUserWord(){
         if(userWords.size() < 10 && userWords.size() > 0 && semaphore < semaphoreLockout) {
             semaphore ++;
             Map<String, Object> data = new HashMap<>();
@@ -472,6 +472,43 @@ public class UserInformation {
         }
     }
 
+    public void replenishWordsRandomly(){
+        Map<String, Object> data = new HashMap<>();
+
+//            System.out.println("Replenshing words ... using: " + targetWord);
+        String[] bannedWords = this.getUsedWords().toArray(new String[this.getUsedWords().size()]);
+//            String[] userWords = this.getUserWords().toArray(new String[this.getUserWords().size()]);
+        data.put("bannedWords", new JSONArray(Arrays.asList(bannedWords)));
+
+        mFunctions.getHttpsCallable("getRandomWords")
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String[]>() {
+                    @Override
+                    public String[] then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        // This continuation runs on either success or failure, but if the task
+                        // has failed then getResult() will throw an Exception which will be
+                        // propagated down.
+                        String[] result = task.getResult().getData().toString().substring(1, task.getResult().getData().toString().length() -1).split("\\s*,\\s*");
+                        return result;
+
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<String[]>() {
+            @Override
+            public void onComplete(@NonNull Task<String[]> task) {
+                if(task.isSuccessful()){
+                    String[] topics = task.getResult();
+                    System.out.println("New found words: "+ Arrays.toString(topics));
+
+
+                }
+                else if(task.isComplete())
+                {
+                    System.out.println(task.getException());
+                }
+            }
+        });;
+    }
+
     public synchronized void replenishArticles() {
         if(userArticles.size() < 5 && userWords.size() > 0) {
             String topic = this.getTargetWord();
@@ -481,7 +518,7 @@ public class UserInformation {
         }
 
         else if(userWords.size() < 1){
-            replenishWords();
+            replenishWordsUsingUserWord();
         }
 
     }
