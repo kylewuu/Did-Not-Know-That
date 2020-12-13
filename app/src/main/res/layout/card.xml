@@ -19,6 +19,13 @@
         app:cardCornerRadius="15dp"
         android:id="@+id/cardView">
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -50,8 +57,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     tools:text="hello_world"
-                    android:clickable="true"
-                    android:onClick="bodyTextOnClick"
+
                     android:ellipsize="end"
                     android:maxLines="31"
                     />
@@ -68,6 +74,30 @@
 
 
             </LinearLayout>
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="540dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:onClick="bodyTextOnClickPrevious">
+
+
+            </View>
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="540dp"
+                android:background="@android:color/transparent"
+                android:layout_gravity="right"
+                android:clickable="true"
+                android:onClick="bodyTextOnClickNext">
+
+
+            </View>
+
+        </FrameLayout>
+
 
 
 

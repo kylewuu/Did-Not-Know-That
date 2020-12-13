@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void bodyTextOnClick(View v){
+    public void bodyTextOnClickNext(View v){
         // testing stuff, can be removed
 //        cardHandler.cards.set(0, new Cards(new String[]{"test", "test", "test"}));
 //        cardHandler.cards.remove(0);
@@ -66,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getNextCard());
+    }
+
+    public void bodyTextOnClickPrevious(View v){
+        // testing stuff, can be removed
+//        cardHandler.cards.set(0, new Cards(new String[]{"test", "test", "test"}));
+//        cardHandler.cards.remove(0);
+//        cardHandler.arrayAdapter.notifyDataSetChanged();
+
+
+        cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getPreviousCard());
     }
 
 
