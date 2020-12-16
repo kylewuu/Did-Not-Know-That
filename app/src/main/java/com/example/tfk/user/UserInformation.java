@@ -36,6 +36,7 @@ public class UserInformation {
     public Vector<String> usedArticles;
     public Vector<String> userWords;
     public Vector<String> userArticles;
+    public Vector<ParentWords> parentWords;
     public JSONObject config;
     public Context context;
     private FirebaseFunctions mFunctions;
@@ -82,12 +83,15 @@ public class UserInformation {
         usedArticles = new Vector<>();
         userWords = new Vector<>();
         userArticles = new Vector<>();
+        parentWords = new Vector<>();
 
+        String[] userStartWords = new String[]{"travel", "software", "anti-plague", "vancouver-kingsway", "military", "university", "football", "production", "announced", "unforced", "radio"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
-        updateUserWords(new String[]{"travel", "software", "anti-plague", "vancouver-kingsway", "military", "university", "football", "production", "announced", "unforced", "radio"});
+        updateUserWords(userStartWords);
         updateUserArticles(new String[]{"https://en.wikipedia.org/wiki/Vancouver", "https://en.wikipedia.org/wiki/Subaru"});
+        updateParentWords(noParentWordsToParentWordsArray(userStartWords));
     }
 
     private void updateVectors(){
@@ -97,6 +101,14 @@ public class UserInformation {
         userArticles = readUserArticlesFromFile();
     }
 
+
+    private ParentWords[] noParentWordsToParentWordsArray(String[] words){
+        ParentWords[] ret = new ParentWords[words.length];
+        for(int i=0;i<words.length;i++){
+            ret[i] = new ParentWords(words[i], "");
+        }
+        return ret;
+    }
 
     private Vector<String> readUsedArticlesFromFile(){
 
@@ -235,6 +247,39 @@ public class UserInformation {
 
     }
 
+    private Vector<ParentWords> readParentChildWordsFromFile(){
+        Vector<ParentWords> ret = new Vector<>();
+
+        try {
+            InputStream inputStream = context.openFileInput("parentWords.txt");
+
+            if ( inputStream != null ) {
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                    String[] parentWords = receiveString.split("&",2);
+                    ret.add(new ParentWords(parentWords[0], parentWords[1]));
+                }
+
+                inputStream.close();
+//                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.toString());
+        } catch (IOException e) {
+            System.out.println("Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
+
     private JSONObject readConfig() throws JSONException {
 
         String ret = "";
@@ -322,6 +367,19 @@ public class UserInformation {
         }
     }
 
+    private void writeToParentWords(){
+
+        String str = arrayToParentWords(parentWords.toArray(new ParentWords[parentWords.size()]));
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("parentWords.txt", context.MODE_PRIVATE));
+            outputStreamWriter.write(str);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
     private void writeToConfig() throws JSONException {
 
         try {
@@ -364,6 +422,14 @@ public class UserInformation {
             userArticles.add(data[i]);
         }
         writeToUserArticles();
+
+    }
+
+    public void updateParentWords(ParentWords[] data){
+        for(int i = 0; i < data.length; i++){
+            parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
+        }
+        writeToParentWords();
 
     }
 
@@ -420,6 +486,17 @@ public class UserInformation {
         StringBuilder ret = new StringBuilder();
         for(int i = 0;i < array.length; i++){
             ret.append(array[i]);
+            ret.append("\n");
+        }
+        return ret.toString();
+    }
+
+    private String arrayToParentWords(ParentWords[] array){
+        StringBuilder ret = new StringBuilder();
+        for(int i = 0;i < array.length; i++){
+            ret.append(array[i].getWord());
+            ret.append("&");
+            ret.append(array[i].getParent());
             ret.append("\n");
         }
         return ret.toString();
