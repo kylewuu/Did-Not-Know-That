@@ -35,8 +35,8 @@ public class UserInformation {
     public Vector<String> usedWords;
     public Vector<String> usedArticles;
     public Vector<String> userWords;
-    public Vector<String> userArticles;
     public Vector<ParentWords> parentWords;
+    public Vector<ArticleWords> articleWords;
     public JSONObject config;
     public Context context;
     private FirebaseFunctions mFunctions;
@@ -68,12 +68,6 @@ public class UserInformation {
             firstTimeInitTextFiles(); // add in condition for this to run
         }
 
-//        JSONObject jsonObject = new JSONObject();
-//        jsonObject.put("firstBoot", false);
-//        config = jsonObject;
-//        writeToConfig();
-//
-//        firstTimeInitTextFiles(); // add in condition for this to run
 
     }
 
@@ -82,15 +76,16 @@ public class UserInformation {
         usedWords = new Vector<>();
         usedArticles = new Vector<>();
         userWords = new Vector<>();
-        userArticles = new Vector<>();
         parentWords = new Vector<>();
+        articleWords = new Vector<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "vancouver-kingsway", "military", "university", "football", "production", "announced", "unforced", "radio"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/Vancouver", "https://en.wikipedia.org/wiki/Subaru"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
         updateUserWords(userStartWords);
-        updateUserArticles(new String[]{"https://en.wikipedia.org/wiki/Vancouver", "https://en.wikipedia.org/wiki/Subaru"});
+        updateArticleWords(noWordArticlesToArticleWords(userStartArticles));
         updateParentWords(noParentWordsToParentWordsArray(userStartWords));
     }
 
@@ -98,7 +93,8 @@ public class UserInformation {
         usedWords = readUsedWordsFromFile();
         usedArticles = readUsedArticlesFromFile();
         userWords = readUserWordsFromFile();
-        userArticles = readUserArticlesFromFile();
+        parentWords = readParentWordsFromFile();
+        articleWords = readArticleWordsFromFile();
     }
 
 
@@ -106,6 +102,14 @@ public class UserInformation {
         ParentWords[] ret = new ParentWords[words.length];
         for(int i=0;i<words.length;i++){
             ret[i] = new ParentWords(words[i], "");
+        }
+        return ret;
+    }
+
+    private ArticleWords[] noWordArticlesToArticleWords(String[] articles){
+        ArticleWords[] ret = new ArticleWords[articles.length];
+        for(int i=0;i<articles.length;i++){
+            ret[i] = new ArticleWords(articles[i], articles[i].split("wiki/", 2)[1]);
         }
         return ret;
     }
@@ -213,41 +217,8 @@ public class UserInformation {
 
     }
 
-    private Vector<String> readUserArticlesFromFile(){
 
-        Vector<String> ret = new Vector<String>();
-
-        try {
-            InputStream inputStream = context.openFileInput("userArticles.txt");
-
-            if ( inputStream != null ) {
-
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append("\n").append(receiveString);
-                    ret.add(receiveString);
-                }
-
-                inputStream.close();
-//                ret = stringBuilder.toString();
-            }
-        }
-        catch (FileNotFoundException e) {
-            System.out.println("File not found: " + e.toString());
-        } catch (IOException e) {
-            System.out.println("Can not read file: " + e.toString());
-        }
-
-        return ret;
-
-    }
-
-    private Vector<ParentWords> readParentChildWordsFromFile(){
+    private Vector<ParentWords> readParentWordsFromFile(){
         Vector<ParentWords> ret = new Vector<>();
 
         try {
@@ -265,6 +236,39 @@ public class UserInformation {
                     stringBuilder.append("\n").append(receiveString);
                     String[] parentWords = receiveString.split("&",2);
                     ret.add(new ParentWords(parentWords[0], parentWords[1]));
+                }
+
+                inputStream.close();
+//                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.toString());
+        } catch (IOException e) {
+            System.out.println("Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
+
+    private Vector<ArticleWords> readArticleWordsFromFile(){
+        Vector<ArticleWords> ret = new Vector<>();
+
+        try {
+            InputStream inputStream = context.openFileInput("articleWords.txt");
+
+            if ( inputStream != null ) {
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                    String[] articleWords = receiveString.split("&&&",2);
+                    ret.add(new ArticleWords(articleWords[0], articleWords[1]));
                 }
 
                 inputStream.close();
@@ -354,11 +358,12 @@ public class UserInformation {
         }
     }
 
-    private void writeToUserArticles(){
 
-        String str = arrayToString(userArticles.toArray(new String[userArticles.size()]));
+    private void writeToParentWords(){
+
+        String str = arrayToParentWords(parentWords.toArray(new ParentWords[parentWords.size()]));
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("userArticles.txt", context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("parentWords.txt", context.MODE_PRIVATE));
             outputStreamWriter.write(str);
             outputStreamWriter.close();
         }
@@ -367,11 +372,11 @@ public class UserInformation {
         }
     }
 
-    private void writeToParentWords(){
+    private void writeToArticleWords(){
 
-        String str = arrayToParentWords(parentWords.toArray(new ParentWords[parentWords.size()]));
+        String str = arrayToArticleWords(articleWords.toArray(new ArticleWords[articleWords.size()]));
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("parentWords.txt", context.MODE_PRIVATE));
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("articleWords.txt", context.MODE_PRIVATE));
             outputStreamWriter.write(str);
             outputStreamWriter.close();
         }
@@ -417,19 +422,20 @@ public class UserInformation {
 
     }
 
-    public void updateUserArticles(String[] data){
-        for(int i = 0; i < data.length; i++){
-            userArticles.add(data[i]);
-        }
-        writeToUserArticles();
-
-    }
 
     public void updateParentWords(ParentWords[] data){
         for(int i = 0; i < data.length; i++){
             parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
         }
         writeToParentWords();
+
+    }
+
+    public void updateArticleWords(ArticleWords[] data){
+        for(int i = 0; i < data.length; i++){
+            articleWords.add(new ArticleWords(data[i].getUrl(), data[i].getWord()));
+        }
+        writeToArticleWords();
 
     }
 
@@ -469,17 +475,6 @@ public class UserInformation {
         return ret;
     }
 
-    public synchronized String getTargetArticle(){
-        // add chosen word to usedWords and remove from userWords
-        String[] array = userArticles.toArray(new String[userArticles.size()]);
-        int rnd = new Random().nextInt(array.length);
-        String ret = array[rnd];
-        updateUsedArticles(new String[]{array[rnd]});
-        userArticles.remove(array[rnd]);
-        writeToUserArticles();
-        replenishArticles();
-        return ret;
-    }
 
 
     private String arrayToString(String[] array){
@@ -497,6 +492,17 @@ public class UserInformation {
             ret.append(array[i].getWord());
             ret.append("&");
             ret.append(array[i].getParent());
+            ret.append("\n");
+        }
+        return ret.toString();
+    }
+
+    private String arrayToArticleWords(ArticleWords[] array){
+        StringBuilder ret = new StringBuilder();
+        for(int i = 0;i < array.length; i++){
+            ret.append(array[i].getUrl());
+            ret.append("&&&");
+            ret.append(array[i].getWord());
             ret.append("\n");
         }
         return ret.toString();
@@ -586,12 +592,14 @@ public class UserInformation {
         });;
     }
 
+
+
     public synchronized void replenishArticles() {
-        if(userArticles.size() < 5 && userWords.size() > 0) {
+        if(articleWords.size() < 5 && userWords.size() > 0) {
             String topic = this.getTargetWord();
             String url = "https://en.wikipedia.org/w/index.php?search="+topic+"&title=Special%3ASearch&go=Go&ns0=1";
 
-            (new FindMoreArticles(this, url)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            (new FindMoreArticles(this, url, topic)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         else if(userWords.size() < 1){
@@ -599,6 +607,70 @@ public class UserInformation {
         }
 
     }
+
+    // ----------------------------------------------------------
+    // --                    new functions                     --
+    // ----------------------------------------------------------
+
+
+    public synchronized void findMoreArticles(){
+        if(articleWords.size() < 5 && userWords.size() > 0) {
+            String chosenWord = this.chooseRandomUserWord();
+            removeWordFromUserWords(chosenWord);
+            moveUserWordToUsedWords(chosenWord);
+            removeUserWordFromParentWords(chosenWord);
+            callFindMoreArticles(chosenWord);
+        }
+        else{
+//            findMoreWords(); // NEEDS IMPLEMENTATION
+        }
+    }
+
+    public synchronized String chooseRandomUserWord(){
+        // add chosen word to usedWords and remove from userWords
+        String[] array = userWords.toArray(new String[userWords.size()]);
+        int rnd = new Random().nextInt(array.length);
+        String ret = array[rnd];
+        return ret;
+    }
+
+    public synchronized void removeWordFromUserWords(String word){
+        userWords.remove(word);
+    }
+
+    public synchronized void moveUserWordToUsedWords(String word){
+        updateUsedArticles(new String[]{word});
+    }
+
+    public synchronized void removeUserWordFromParentWords(String word){
+        for(int i=0; i<parentWords.size() ;i++){
+            if(parentWords.get(i).getWord() == word) {
+                parentWords.remove(parentWords.get(i));
+                i++;
+            }
+        }
+    }
+
+    public synchronized void callFindMoreArticles(String word){
+        String url = "https://en.wikipedia.org/w/index.php?search="+word+"&title=Special%3ASearch&go=Go&ns0=1";
+
+        (new FindMoreArticles(this, url, word)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public synchronized ArticleWords getArticleAndWord(){
+        // add chosen word to usedWords and remove from userWords
+        ArticleWords[] array = articleWords.toArray(new ArticleWords[articleWords.size()]);
+        int rnd = new Random().nextInt(array.length);
+        ArticleWords ret = array[rnd];
+        updateUsedArticles(new String[]{array[rnd].getUrl()});
+        articleWords.remove(array[rnd]);
+        writeToArticleWords();
+        findMoreArticles();
+        return ret;
+    }
+    // ----------------------------------------------------------
+    // --               end of new functions                   --
+    // ----------------------------------------------------------
 
 
     public boolean checkIfArticlesIsNotUsed(String url){

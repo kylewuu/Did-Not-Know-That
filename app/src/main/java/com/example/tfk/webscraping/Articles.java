@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.tfk.user.ArticleWords;
 import com.example.tfk.user.UserInformation;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,9 +55,14 @@ public class Articles{
 //    }
 
     public synchronized String[] getAllArticlesElements(UserInformation userInfo) {
-        String[] ret = new String[3]; // title, body, link
-        String url = userInfo.getTargetArticle();
+        String[] ret = new String[4]; // title, body, link
+//        String url = userInfo.getTargetArticle();
+        ArticleWords articleWord = userInfo.getArticleAndWord();
+        String url = articleWord.getUrl();
+        String word = articleWord.getWord();
         ret[2] = url;
+        ret[3] = word;
+
 
         try {
 //            Document document = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")

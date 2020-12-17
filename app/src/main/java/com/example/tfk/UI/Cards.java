@@ -4,6 +4,7 @@ public class Cards {
     private String title;
     private String[] body;
     private String link;
+    private String word;
     private int currentCard;
 
     public Cards(String[] elements){
@@ -105,6 +106,7 @@ public class Cards {
 //
 //        };
         this.link = elements[2];
+        this.word = elements[3];
 
         currentCard = 0;
     }
@@ -115,6 +117,7 @@ public class Cards {
     public String[] getBody(){
         return this.body;
     }
+    public String getWord() { return this.word;}
     public String getNextCard() {
         if(currentCard < this.body.length - 1) {
             currentCard ++;

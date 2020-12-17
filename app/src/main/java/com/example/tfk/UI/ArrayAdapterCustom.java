@@ -43,8 +43,8 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
         bodyArray[position] = body;
 
-        title.setText(card_item.getTitle());
-//        body.setText(card_item.getBody()[0]);
+        title.setText(card_item.getTitle() + " : " + card_item.getWord()); // to be removed, this is just to visualize the words
+//        title.setText(card_item.getTitle()); // to be uncommented
         splitUpBodyText(body, card_item, card_item.getBody()[0]);
         link.setText(card_item.getLink());
 

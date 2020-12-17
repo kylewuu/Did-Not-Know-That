@@ -54,9 +54,9 @@ public class CardHandler {
         articles = new Articles(userInfo);
 
 
-        if(userInfo.userArticles.size() > 0) {
+        if(userInfo.articleWords.size() > 0) {
             cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-            if(userInfo.userArticles.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+            if(userInfo.articleWords.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
             userInfo.replenishWordsUsingUserWord();
         }
         else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
@@ -97,7 +97,7 @@ public class CardHandler {
                 addNewCard();
                 arrayAdapter.notifyDataSetChanged();
                 i++;
-                if(cards.size() < maxSizeOfCardsDeck && userInfo.userArticles.size() >=1 ) addNewCard();
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
             }
 
             @Override
@@ -127,8 +127,8 @@ public class CardHandler {
         service.submit(new Runnable() {
             public void run() {
                 Log.d("LIST", "Adding new card");
-                if(userInfo.userArticles.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-                if(cards.size() < maxSizeOfCardsDeck && userInfo.userArticles.size() >=1 ) addNewCard();
+                if(userInfo.articleWords.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
             }
         });
     }

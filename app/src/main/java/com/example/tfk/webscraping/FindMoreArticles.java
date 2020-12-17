@@ -2,6 +2,7 @@ package com.example.tfk.webscraping;
 
 import android.os.AsyncTask;
 
+import com.example.tfk.user.ArticleWords;
 import com.example.tfk.user.UserInformation;
 
 import org.jsoup.Jsoup;
@@ -15,11 +16,13 @@ public class FindMoreArticles extends AsyncTask<Void, Void, String> {
 
     UserInformation userInfo;
     String url;
+    String word;
 
 
-    public FindMoreArticles(UserInformation userInfo, String url) {
+    public FindMoreArticles(UserInformation userInfo, String url, String word) {
         this.userInfo = userInfo;
         this.url = url;
+        this.word = word;
     }
 
     @Override
@@ -53,11 +56,11 @@ public class FindMoreArticles extends AsyncTask<Void, Void, String> {
             }
 
             if(userInfo.checkIfArticlesIsNotUsed(url)) {
-                userInfo.updateUserArticles(new String[]{url});
+                userInfo.updateArticleWords(new ArticleWords[]{new ArticleWords(url, word)});
                 System.out.println("Added url: " + url);
             }
 
-            if(userInfo.userArticles.size() < 5 && userInfo.userWords.size() > 5) userInfo.replenishArticles();
+            if(userInfo.articleWords.size() < 5 && userInfo.userWords.size() > 5) userInfo.replenishArticles();
 
         } catch (IOException e) {
             e.printStackTrace();
