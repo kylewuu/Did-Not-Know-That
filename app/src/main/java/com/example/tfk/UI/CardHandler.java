@@ -81,6 +81,10 @@ public class CardHandler {
                 //Do something on the left!
                 //You cardsso have access to the origincards object.
                 //If you want to use it just cast it (String) dataObject
+
+                Cards card = (Cards) dataObject;
+
+                userInfo.removeUserWordOnDislike(card.getWord());
                 Toast.makeText(mContext, "Left!", Toast.LENGTH_SHORT).show();
             }
 

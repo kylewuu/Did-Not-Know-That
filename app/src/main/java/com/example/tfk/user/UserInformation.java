@@ -84,10 +84,13 @@ public class UserInformation {
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
-        updateUserWords(userStartWords);
+//        updateUserWords(userStartWords);
+        updateUserWords(new String[]{"travel", "travelling", "vancouver", "calgary"});
         updateArticleWords(noWordArticlesToArticleWords(userStartArticles));
-        updateParentWords(noParentWordsToParentWordsArray(userStartWords));
+//        updateParentWords(noParentWordsToParentWordsArray(userStartWords));
+        updateParentWords(new ParentWords[]{new ParentWords("travel", "travelling"), new ParentWords("vancouver", "calgary")});
     }
+
 
     private void updateVectors(){
         usedWords = readUsedWordsFromFile();
@@ -109,7 +112,7 @@ public class UserInformation {
     private ArticleWords[] noWordArticlesToArticleWords(String[] articles){
         ArticleWords[] ret = new ArticleWords[articles.length];
         for(int i=0;i<articles.length;i++){
-            ret[i] = new ArticleWords(articles[i], articles[i].split("wiki/", 2)[1]);
+            ret[i] = new ArticleWords(articles[i], articles[i].split("wiki/", 2)[1].toLowerCase());
         }
         return ret;
     }
@@ -639,7 +642,7 @@ public class UserInformation {
     }
 
     public synchronized void moveUserWordToUsedWords(String word){
-        updateUsedArticles(new String[]{word});
+        updateUsedWords(new String[]{word});
     }
 
     public synchronized void removeUserWordFromParentWords(String word){
@@ -667,6 +670,50 @@ public class UserInformation {
         writeToArticleWords();
         findMoreArticles();
         return ret;
+    }
+
+    public synchronized void removeUserWordOnDislike(String word){
+        removeAllChildrenWordsFromParentWordAndUserWords(word);
+    }
+
+    private synchronized void removeAllChildrenWordsFromParentWordAndUserWords(String word){
+//        System.out.println("Word to remove: " + word);
+        Vector<String> wordsToRemove = new Vector<>();
+        wordsToRemove.add(word.toLowerCase());
+        for(int i=0;i<parentWords.size();i++){
+            String tempWord = parentWords.get(i).getParent();
+            String tempChildWord = parentWords.get(i).getWord();
+
+            if(wordsToRemove.contains(tempWord) || wordsToRemove.contains(tempChildWord)){
+                wordsToRemove.add(tempWord);
+                if(!wordsToRemove.contains(tempChildWord)) wordsToRemove.add(tempChildWord);
+                if(!wordsToRemove.contains(tempWord)) wordsToRemove.add(tempWord);
+
+                if(userWords.contains(tempChildWord)) userWords.remove(tempChildWord);
+                if(userWords.contains(tempWord)) userWords.remove(tempWord);
+
+                if(!usedWords.contains(tempChildWord)) usedWords.add(tempChildWord);
+                if(!usedWords.contains(tempWord)) usedWords.add(tempWord);
+
+                parentWords.remove(i);
+                i--;
+            }
+        }
+
+        for(int i=0;i<articleWords.size();i++){
+            if(wordsToRemove.contains(articleWords.get(i))) {
+                usedArticles.add(articleWords.get(i).getUrl());
+                articleWords.remove(i);
+                i--;
+            }
+        }
+
+        writeToUsedArticles();
+        writeToUsedWords();
+        writeToUserWords();
+        writeToParentWords();
+
+        // maybe call replenish words and/or replenish articles here?
     }
     // ----------------------------------------------------------
     // --               end of new functions                   --
