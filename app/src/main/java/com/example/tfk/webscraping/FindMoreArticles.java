@@ -60,7 +60,7 @@ public class FindMoreArticles extends AsyncTask<Void, Void, String> {
                 System.out.println("Added url: " + url);
             }
 
-            if(userInfo.articleWords.size() < 5 && userInfo.userWords.size() > 5) userInfo.replenishArticles();
+            if(userInfo.articleWords.size() < 5 && userInfo.userWords.size() > 5) userInfo.findMoreArticles();
 
         } catch (IOException e) {
             e.printStackTrace();

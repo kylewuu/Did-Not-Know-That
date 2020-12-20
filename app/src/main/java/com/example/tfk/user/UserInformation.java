@@ -2,9 +2,11 @@ package com.example.tfk.user;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.example.tfk.webscraping.FindMoreArticles;
 import com.google.android.gms.tasks.Continuation;
@@ -28,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 
 public class UserInformation {
@@ -37,6 +40,7 @@ public class UserInformation {
     public Vector<String> userWords;
     public Vector<ParentWords> parentWords;
     public Vector<ArticleWords> articleWords;
+    public Vector<String> userLikedWords;
     public JSONObject config;
     public Context context;
     private FirebaseFunctions mFunctions;
@@ -78,17 +82,19 @@ public class UserInformation {
         userWords = new Vector<>();
         parentWords = new Vector<>();
         articleWords = new Vector<>();
+        userLikedWords = new Vector<>();
 
-        String[] userStartWords = new String[]{"travel", "software", "anti-plague", "vancouver-kingsway", "military", "university", "football", "production", "announced", "unforced", "radio"};
-        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/Vancouver", "https://en.wikipedia.org/wiki/Subaru"};
+        String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
-        updateUsedWords(new String[]{"travelling", "trip"});
+        updateUsedWords(new String[]{"travelling", "trip", "slamdunk", "tuplets"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
 //        updateUserWords(userStartWords);
-        updateUserWords(new String[]{"travel", "travelling", "vancouver", "calgary"});
+        updateUserWords(new String[]{"football", "vancouver-kingsway"});
         updateArticleWords(noWordArticlesToArticleWords(userStartArticles));
 //        updateParentWords(noParentWordsToParentWordsArray(userStartWords));
-        updateParentWords(new ParentWords[]{new ParentWords("travel", "travelling"), new ParentWords("vancouver", "calgary")});
+        updateParentWords(new ParentWords[]{new ParentWords("football", ""), new ParentWords("vancouver-kingsway", "")});
+        updateUserLikedWords(new String[] {});
     }
 
 
@@ -98,6 +104,7 @@ public class UserInformation {
         userWords = readUserWordsFromFile();
         parentWords = readParentWordsFromFile();
         articleWords = readArticleWordsFromFile();
+        userLikedWords = readUserLikedWordsFromFile();
     }
 
 
@@ -287,6 +294,40 @@ public class UserInformation {
         return ret;
     }
 
+    private Vector<String> readUserLikedWordsFromFile(){
+
+        Vector<String> ret = new Vector<String>();
+
+        try {
+            InputStream inputStream = context.openFileInput("userLikedWords.txt");
+
+            if ( inputStream != null ) {
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append("\n").append(receiveString);
+                    ret.add(receiveString);
+                }
+
+                inputStream.close();
+//                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.toString());
+        } catch (IOException e) {
+            System.out.println("Can not read file: " + e.toString());
+        }
+
+        return ret;
+
+    }
+
     private JSONObject readConfig() throws JSONException {
 
         String ret = "";
@@ -388,6 +429,20 @@ public class UserInformation {
         }
     }
 
+    private void writeToUserLikedWords(){
+
+        String str = arrayToString(userLikedWords.toArray(new String[userLikedWords.size()]));
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("userLikedWords.txt", context.MODE_PRIVATE));
+            outputStreamWriter.write(str);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+
     private void writeToConfig() throws JSONException {
 
         try {
@@ -417,19 +472,23 @@ public class UserInformation {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateUserWords(String[] data){
         for(int i = 0; i < data.length; i++){
             userWords.add(data[i]);
         }
-        writeToUserWords();
 
+        userWords = userWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
+        writeToUserWords();
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateParentWords(ParentWords[] data){
         for(int i = 0; i < data.length; i++){
             parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
         }
+        parentWords = parentWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
         writeToParentWords();
 
     }
@@ -439,6 +498,14 @@ public class UserInformation {
             articleWords.add(new ArticleWords(data[i].getUrl(), data[i].getWord()));
         }
         writeToArticleWords();
+
+    }
+
+    public void updateUserLikedWords(String[] data){
+        for(int i = 0; i < data.length; i++){
+            userLikedWords.add(data[i]);
+        }
+        writeToUserLikedWords();
 
     }
 
@@ -455,30 +522,6 @@ public class UserInformation {
     public Vector<String> getUserWords(){
         return userWords;
     }
-
-    public synchronized String getTargetWord(){
-        // add chosen word to usedWords and remove from userWords
-        String[] array = userWords.toArray(new String[userWords.size()]);
-        int rnd = new Random().nextInt(array.length);
-        String ret = array[rnd];
-        updateUsedWords(new String[]{array[rnd]});
-        userWords.remove(array[rnd]);
-        writeToUserWords();
-        replenishWordsUsingUserWord();
-        return ret;
-    }
-
-    public String getRandomUserWord(){
-        String[] array = userWords.toArray(new String[userWords.size()]);
-        int rnd = new Random().nextInt(array.length);
-        String ret = array[rnd];
-        updateUsedWords(new String[]{array[rnd]});
-        userWords.remove(array[rnd]);
-        writeToUserWords();
-        return ret;
-    }
-
-
 
     private String arrayToString(String[] array){
         StringBuilder ret = new StringBuilder();
@@ -511,14 +554,47 @@ public class UserInformation {
         return ret.toString();
     }
 
-    public synchronized void replenishWordsUsingUserWord(){
-        if(userWords.size() < 10 && userWords.size() > 0 && semaphore < semaphoreLockout) {
+
+    public synchronized void checkSupplyOfWordsAndArticles(){
+        if(userWords.size() < 10){
+            findMoreWords();
+        }
+        else if(articleWords.size() < 7){
+            findMoreArticles();
+        }
+    }
+
+    public synchronized void findMoreWordsUsingTargetWord(String word){
+        String chosenWord = word;
+        callFirebaseFunctionFindWordsUsingTargetWord(chosenWord);
+    }
+
+    public synchronized void findMoreWords(){
+        if((userWords.size() < 10 && userWords.size() > 0) || userLikedWords.size() > 0) {
+            String chosenWord = chooseRandomUserWordForFindMoreWords();
+            callFirebaseFunctionFindWordsUsingTargetWord(chosenWord);
+        }
+        else if(userWords.size() <= 0){
+            replenishWordsRandomly();
+        }
+    }
+
+    private synchronized String chooseRandomUserWordForFindMoreWords(){
+        String[] array;
+        if(userLikedWords.size() > 0) array = userLikedWords.toArray(new String[userLikedWords.size()]);
+        else array = userWords.toArray(new String[userWords.size()]);
+
+        int rnd = new Random().nextInt(array.length);
+        String ret = array[rnd];
+        return ret;
+    }
+
+    private synchronized void callFirebaseFunctionFindWordsUsingTargetWord(String word){
+        if(semaphore < semaphoreLockout) {
             semaphore ++;
             Map<String, Object> data = new HashMap<>();
-            String targetWord = this.getRandomUserWord();
-//            System.out.println("Replenshing words ... using: " + targetWord);
-            String[] bannedWords = this.getUsedWords().toArray(new String[this.getUsedWords().size()]);
-//            String[] userWords = this.getUserWords().toArray(new String[this.getUserWords().size()]);
+            String targetWord = word;
+            String[] bannedWords = concatArray(this.getUsedWords().toArray(new String[this.getUsedWords().size()]), userWords.toArray(new String[userWords.size()]));
             data.put("targetWord", targetWord);
             data.put("bannedWords", new JSONArray(Arrays.asList(bannedWords)));
 
@@ -527,43 +603,40 @@ public class UserInformation {
                     .continueWith(new Continuation<HttpsCallableResult, String[]>() {
                         @Override
                         public String[] then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                            // This continuation runs on either success or failure, but if the task
-                            // has failed then getResult() will throw an Exception which will be
-                            // propagated down.
                             String[] result = task.getResult().getData().toString().substring(1, task.getResult().getData().toString().length() -1).split("\\s*,\\s*");
                             return result;
-
                         }
                     }).addOnCompleteListener(new OnCompleteListener<String[]>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String[]> task) {
-                            if(task.isSuccessful()){
-                                String[] topics = task.getResult();
-                                System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(topics));
-                                updateUserWords(topics);
-                                replenishArticles();
-                                semaphore --;
+                @Override
+                public void onComplete(@NonNull Task<String[]> task) {
+                    if(task.isSuccessful()){
+                        String[] wordsFound = task.getResult();
+                        if(wordsFound.length > 0){
+                            System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(wordsFound));
+                            ParentWords[] parentWordsToAdd = new ParentWords[wordsFound.length];
+                            for(int i=0;i<wordsFound.length;i++){
+                                parentWordsToAdd[i] = new ParentWords(wordsFound[i], targetWord);
+                            }
+                            updateParentWords(parentWordsToAdd);
+                            updateUserWords(wordsFound);
+                            if(!userLikedWords.contains(targetWord)) findMoreArticlesFromTargetWord(targetWord);
+                            semaphore --;
 
-                            }
-                            else if(task.isComplete())
-                            {
-                                System.out.println(task.getException());
-                            }
                         }
-                    });;
-        }
-        else if(userWords.size() < 1){
-            // call firebase function to get a random word, then call replenishWords();
 
+                    }
+                    else if(task.isComplete())
+                    {
+                        System.out.println(task.getException());
+                    }
+                }
+            });;
         }
     }
 
-    public void replenishWordsRandomly(){
+    private void replenishWordsRandomly(){
         Map<String, Object> data = new HashMap<>();
-
-//            System.out.println("Replenshing words ... using: " + targetWord);
         String[] bannedWords = this.getUsedWords().toArray(new String[this.getUsedWords().size()]);
-//            String[] userWords = this.getUserWords().toArray(new String[this.getUserWords().size()]);
         data.put("bannedWords", new JSONArray(Arrays.asList(bannedWords)));
 
         mFunctions.getHttpsCallable("getRandomWords")
@@ -571,9 +644,7 @@ public class UserInformation {
                 .continueWith(new Continuation<HttpsCallableResult, String[]>() {
                     @Override
                     public String[] then(@NonNull Task<HttpsCallableResult> task) throws Exception {
-                        // This continuation runs on either success or failure, but if the task
-                        // has failed then getResult() will throw an Exception which will be
-                        // propagated down.
+
                         String[] result = task.getResult().getData().toString().substring(1, task.getResult().getData().toString().length() -1).split("\\s*,\\s*");
                         return result;
 
@@ -582,9 +653,17 @@ public class UserInformation {
             @Override
             public void onComplete(@NonNull Task<String[]> task) {
                 if(task.isSuccessful()){
-                    String[] topics = task.getResult();
-                    System.out.println("New found words: "+ Arrays.toString(topics));
-
+                    String[] wordsFound = task.getResult();
+                    if(wordsFound.length > 0) {
+                        System.out.println("Randomly added new words: " + Arrays.toString(wordsFound));
+                        ParentWords[] parentWordsToAdd = new ParentWords[wordsFound.length];
+                        for (int i = 0; i < wordsFound.length; i++) {
+                            parentWordsToAdd[i] = new ParentWords(wordsFound[i], "");
+                        }
+                        updateParentWords(parentWordsToAdd);
+                        updateUserWords(wordsFound);
+                        findMoreArticles();
+                    }
 
                 }
                 else if(task.isComplete())
@@ -592,45 +671,37 @@ public class UserInformation {
                     System.out.println(task.getException());
                 }
             }
-        });;
+        });
     }
 
-
-
-    public synchronized void replenishArticles() {
-        if(articleWords.size() < 5 && userWords.size() > 0) {
-            String topic = this.getTargetWord();
-            String url = "https://en.wikipedia.org/w/index.php?search="+topic+"&title=Special%3ASearch&go=Go&ns0=1";
-
-            (new FindMoreArticles(this, url, topic)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-
-        else if(userWords.size() < 1){
-            replenishWordsUsingUserWord();
-        }
-
+    private synchronized void findMoreArticlesFromTargetWord(String chosenWord){
+        removeWordFromUserWords(chosenWord);
+        moveUserWordToUsedWords(chosenWord);
+        removeUserWordFromParentWords(chosenWord);
+        callFindMoreArticles(chosenWord);
     }
-
-    // ----------------------------------------------------------
-    // --                    new functions                     --
-    // ----------------------------------------------------------
-
 
     public synchronized void findMoreArticles(){
-        if(articleWords.size() < 5 && userWords.size() > 0) {
+        if(articleWords.size() < 7 && userWords.size() > 0) {
             String chosenWord = this.chooseRandomUserWord();
             removeWordFromUserWords(chosenWord);
             moveUserWordToUsedWords(chosenWord);
             removeUserWordFromParentWords(chosenWord);
             callFindMoreArticles(chosenWord);
+
+            writeToUsedArticles();
+            writeToUserWords();
+            writeToUsedWords();
+            writeToParentWords();
+            writeToArticleWords();
         }
-        else{
-//            findMoreWords(); // NEEDS IMPLEMENTATION
+        else if (userWords.size() > 0){
+            findMoreWords();
         }
     }
 
     public synchronized String chooseRandomUserWord(){
-        // add chosen word to usedWords and remove from userWords
+
         String[] array = userWords.toArray(new String[userWords.size()]);
         int rnd = new Random().nextInt(array.length);
         String ret = array[rnd];
@@ -642,13 +713,13 @@ public class UserInformation {
     }
 
     public synchronized void moveUserWordToUsedWords(String word){
-        updateUsedWords(new String[]{word});
+        if(!usedWords.contains(word)) updateUsedWords(new String[]{word});
     }
 
     public synchronized void removeUserWordFromParentWords(String word){
         for(int i=0; i<parentWords.size() ;i++){
-            if(parentWords.get(i).getWord() == word) {
-                parentWords.remove(parentWords.get(i));
+            if(parentWords.get(i).getWord().equals(word)) {
+                parentWords.remove(i);
                 i++;
             }
         }
@@ -713,11 +784,7 @@ public class UserInformation {
         writeToUserWords();
         writeToParentWords();
 
-        // maybe call replenish words and/or replenish articles here?
     }
-    // ----------------------------------------------------------
-    // --               end of new functions                   --
-    // ----------------------------------------------------------
 
 
     public boolean checkIfArticlesIsNotUsed(String url){

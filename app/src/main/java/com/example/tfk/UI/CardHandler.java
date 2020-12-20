@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.tfk.R;
+import com.example.tfk.user.ParentWords;
 import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Articles;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -57,9 +58,9 @@ public class CardHandler {
         if(userInfo.articleWords.size() > 0) {
             cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
             if(userInfo.articleWords.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-            userInfo.replenishWordsUsingUserWord();
+            userInfo.findMoreWords();
         }
-        else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
+        else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", ""}));
 
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
@@ -71,7 +72,7 @@ public class CardHandler {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 Log.d("Number of cards left", String.valueOf(cards.size()));
-                if(cards.size() <= 1) cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", ""}));
+                if(cards.size() <= 1) cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
                 cards.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -82,21 +83,25 @@ public class CardHandler {
                 //You cardsso have access to the origincards object.
                 //If you want to use it just cast it (String) dataObject
 
+                userInfo.checkSupplyOfWordsAndArticles();
                 Cards card = (Cards) dataObject;
-
                 userInfo.removeUserWordOnDislike(card.getWord());
                 Toast.makeText(mContext, "Left!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
+
+                Cards card = (Cards) dataObject;
+                String word = card.getWord();
+                if(word != "CardDeckEmpty") userInfo.updateUserLikedWords(new String[]{word});
+                userInfo.checkSupplyOfWordsAndArticles();
                 Toast.makeText(mContext, "Right!", Toast.LENGTH_SHORT).show();
             }
 
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
-
 
                 addNewCard();
                 arrayAdapter.notifyDataSetChanged();
