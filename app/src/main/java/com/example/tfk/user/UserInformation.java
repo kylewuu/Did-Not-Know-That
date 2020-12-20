@@ -75,6 +75,7 @@ public class UserInformation {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void firstTimeInitTextFiles(){
         // temp writing arguments, needs to change later
         usedWords = new Vector<>();

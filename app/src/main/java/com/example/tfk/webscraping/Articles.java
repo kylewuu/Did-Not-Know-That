@@ -72,7 +72,7 @@ public class Articles{
             Document document = (new GetAllArticleElements(url, userInfo)).execute().get();
 
             ret[0] = parseTitle(document);
-            ret[1] = parseBody(document);
+            ret[1] = parseBody(document).trim();
             System.out.println("Adding new card titled: " + ret[0]);
 
         } catch (InterruptedException e) {
