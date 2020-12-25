@@ -1,13 +1,16 @@
 package com.example.tfk.UI;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.Layout;
 import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.util.ArrayUtils;
 
 import org.jsoup.nodes.Document;
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
@@ -18,11 +21,15 @@ public class SplitUpBodyText extends AsyncTask<String, Void, Document> {
     private Cards card_item;
     private String bodyTextBeforeParse;
     private TextView body;
+    private TextView pageIndicator;
+    private ViewTreeObserver.OnGlobalLayoutListener layoutListenerClass;
 
-    public SplitUpBodyText(TextView body, Cards card_item, String bodyText) {
+    public SplitUpBodyText(TextView body, Cards card_item, String bodyText, TextView pageIndicator, ViewTreeObserver.OnGlobalLayoutListener layoutListenerClass) {
         this.body = body;
         this.card_item = card_item;
         this.bodyTextBeforeParse = bodyText;
+        this.pageIndicator = pageIndicator;
+        this.layoutListenerClass = layoutListenerClass;
     }
 
     @Override
@@ -42,9 +49,17 @@ public class SplitUpBodyText extends AsyncTask<String, Void, Document> {
         finalPages = removeLastElementFromArray(finalPages);
 
         body.setText(finalPages[0]);
-
-
+        card_item.body = new String[finalPages.length];
         card_item.setBody(finalPages);
+
+
+//        System.out.println("Text: " + finalPages[0]);
+//        System.out.println("Final pages size: " + finalPages.length);
+//        System.out.println("Body pages size: " + card_item.body.length);
+
+
+
+
 
         return null;
     }
@@ -134,4 +149,5 @@ public class SplitUpBodyText extends AsyncTask<String, Void, Document> {
         }
 
     }
+
 }

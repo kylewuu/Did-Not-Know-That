@@ -41,7 +41,7 @@ public class CardHandler {
 
     public CardHandler(Context context, UserInformation userInformation) {
 
-        maxSizeOfCardsDeck = 8;
+        maxSizeOfCardsDeck = 5;
 
         userInfo = userInformation;
         mContext = context;

@@ -70,8 +70,9 @@ public class MainActivity extends AppCompatActivity {
 //        cardHandler.cards.remove(0);
 //        cardHandler.arrayAdapter.notifyDataSetChanged();
 
-
+//        System.out.println("Click right: " + cardHandler.cards.get(0).body.length);
         cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getNextCard());
+        if(cardHandler.cards.get(0).body.length > 1) cardHandler.arrayAdapter.pageIndicatorArray[0].setText(String.valueOf(cardHandler.cards.get(0).currentCard + 1));
     }
 
     public void bodyTextOnClickPrevious(View v){
@@ -81,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
 //        cardHandler.arrayAdapter.notifyDataSetChanged();
 
 
+//        System.out.println("Click left: " + cardHandler.cards.get(0).body.length);
         cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getPreviousCard());
+        if(cardHandler.cards.get(0).body.length > 1) cardHandler.arrayAdapter.pageIndicatorArray[0].setText(String.valueOf(cardHandler.cards.get(0).currentCard + 1));
     }
 
 

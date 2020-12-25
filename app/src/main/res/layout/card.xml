@@ -32,7 +32,8 @@
                 android:background="@drawable/rounded_corner"
                 android:orientation="vertical"
                 android:paddingHorizontal="6dp"
-                android:paddingVertical="6dp">
+                android:paddingVertical="6dp"
+                android:gravity="right">
 
 
                 <TextView
@@ -61,6 +62,15 @@
                     android:ellipsize="end"
                     android:maxLines="31"
                     />
+
+
+                <TextView
+                    android:id="@+id/pageIndicator"
+                    android:layout_width="30dp"
+                    android:layout_height="20dp"
+                    android:textColor="@color/white">
+
+                </TextView>
 
 
                 <TextView

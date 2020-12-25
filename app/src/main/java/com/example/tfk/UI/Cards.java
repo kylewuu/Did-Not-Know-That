@@ -2,10 +2,10 @@ package com.example.tfk.UI;
 
 public class Cards {
     private String title;
-    private String[] body;
+    public String[] body;
     private String link;
     private String word;
-    private int currentCard;
+    public int currentCard;
 
     public Cards(String[] elements){
         this.title = elements[0];
