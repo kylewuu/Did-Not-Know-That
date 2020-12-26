@@ -3,6 +3,7 @@ package com.example.tfk.UI;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.text.Layout;
 import android.util.Log;
 import android.util.TypedValue;
@@ -34,6 +35,8 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
         Cards card_item = getItem(position);
 
         if (convertView == null) {
@@ -49,7 +52,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         pageIndicatorArray[position] = pageIndicator;
 
         title.setText(card_item.getTitle() + " : " + card_item.getWord()); // to be removed, this is just to visualize the words
-//        title.setText(card_item.getTitle()); // to be uncommented
+        title.setText(card_item.getTitle()); // to be uncommented
         if(card_item.getBody()[0].indexOf(" . . .") == -1) splitUpBodyTextFunction(body, card_item, card_item.getBody()[0], pageIndicatorArray[position]);
         else {
             body.setText(card_item.getBody()[0]);
@@ -67,7 +70,6 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
 
     private void splitUpBodyTextFunction(TextView body, Cards card_item, String bodyText, TextView pageIndicator) {
-
 
         body.setText(bodyText);
         final String[] bodyTextFinal = {bodyText};
@@ -92,5 +94,6 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
 
     }
+
 
 }

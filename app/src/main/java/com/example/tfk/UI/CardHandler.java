@@ -41,7 +41,7 @@ public class CardHandler {
 
     public CardHandler(Context context, UserInformation userInformation) {
 
-        maxSizeOfCardsDeck = 5;
+        maxSizeOfCardsDeck = 3;
 
         userInfo = userInformation;
         mContext = context;
@@ -132,7 +132,7 @@ public class CardHandler {
     }
 
     private void addNewCard(){
-        ExecutorService service = Executors.newFixedThreadPool(4);
+        ExecutorService service = Executors.newFixedThreadPool(7);
         service.submit(new Runnable() {
             public void run() {
                 Log.d("LIST", "Adding new card");

@@ -65,26 +65,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void bodyTextOnClickNext(View v){
-        // testing stuff, can be removed
-//        cardHandler.cards.set(0, new Cards(new String[]{"test", "test", "test"}));
-//        cardHandler.cards.remove(0);
-//        cardHandler.arrayAdapter.notifyDataSetChanged();
 
-//        System.out.println("Click right: " + cardHandler.cards.get(0).body.length);
         cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getNextCard());
         if(cardHandler.cards.get(0).body.length > 1) cardHandler.arrayAdapter.pageIndicatorArray[0].setText(String.valueOf(cardHandler.cards.get(0).currentCard + 1));
     }
 
     public void bodyTextOnClickPrevious(View v){
-        // testing stuff, can be removed
-//        cardHandler.cards.set(0, new Cards(new String[]{"test", "test", "test"}));
-//        cardHandler.cards.remove(0);
-//        cardHandler.arrayAdapter.notifyDataSetChanged();
 
-
-//        System.out.println("Click left: " + cardHandler.cards.get(0).body.length);
         cardHandler.arrayAdapter.bodyArray[0].setText(cardHandler.cards.get(0).getPreviousCard());
         if(cardHandler.cards.get(0).body.length > 1) cardHandler.arrayAdapter.pageIndicatorArray[0].setText(String.valueOf(cardHandler.cards.get(0).currentCard + 1));
+    }
+
+    public void linkTextOnClick(View v){
+        System.out.println("Open wiki browser");
     }
 
 
