@@ -59,6 +59,9 @@ public class SplitUpBodyText extends AsyncTask<String, Void, Document> {
 
 
 
+        if(card_item.getBody().length > 1){
+            pageIndicator.setText("1");
+        }
 
 
         return null;
