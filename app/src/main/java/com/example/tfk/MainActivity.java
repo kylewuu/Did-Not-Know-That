@@ -1,33 +1,29 @@
 package com.example.tfk;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.example.tfk.UI.CardHandler;
-import com.example.tfk.UI.Cards;
+//import com.example.tfk.UI.CustomDialog;
 import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Articles;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +74,46 @@ public class MainActivity extends AppCompatActivity {
 
     public void linkTextOnClick(View v){
         System.out.println("Open wiki browser");
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this, R.style.CustomAlertDialog);
+
+
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        WebView webView = (WebView) inflater.inflate(R.layout.customdialog, null, false);
+
+//        WebView webView = new WebView(this);
+//        WebView webView = (WebView) findViewById(R.id.webView);
+
+        webView.loadUrl(cardHandler.cards.get(0).getLink());
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+
+//        CustomDialog cdd = new CustomDialog(MainActivity.this);
+//        cdd.show();
+
+//
+//        LinearLayout webViewContainer = findViewById(R.id.webView);
+//        webViewContainer.addView(webView);
+        alertBuilder.setView(webView);
+
+        alertBuilder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT); //create a new one
+        layoutParams.weight = (float) 1.0;
+        layoutParams.gravity = Gravity.CENTER; //this is layout_gravity
+        alert.getButton(AlertDialog.BUTTON_NEGATIVE).setLayoutParams(layoutParams);
     }
 
 
