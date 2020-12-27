@@ -8,7 +8,7 @@
 
     <Button
         android:id="@+id/advanceButton"
-        android:layout_width="100dp"
+        android:layout_width="110dp"
         android:layout_height="100dp"
         android:width="100dp"
         android:height="100dp"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
-        android:text="Go to main Activity">
+        android:text="Advance">
 
     </Button>
 
