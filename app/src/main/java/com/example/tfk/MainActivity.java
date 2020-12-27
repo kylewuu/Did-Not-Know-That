@@ -1,21 +1,18 @@
 package com.example.tfk;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
 import com.example.tfk.UI.CardHandler;
 //import com.example.tfk.UI.CustomDialog;
@@ -51,14 +48,30 @@ public class MainActivity extends AppCompatActivity {
         // get user information
         try {
             userInfo = new UserInformation(getApplicationContext(), mFunctions);
+            if(userInfo.checkForFirstBoot()){
+                // start the other activity
+                Intent intent = new Intent(this, FirstBootActivity.class);
+                startActivityForResult(intent,0);
+            }
+            else {
+                userInfo.updateVectors();
+                cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
+
 
     }
 
+    // start the code
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        userInfo.updateVectors();
+        cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
+    }
 
     public void bodyTextOnClickNext(View v){
 

@@ -52,31 +52,34 @@ public class UserInformation {
         // get data
         context = applicationContext;
         this.mFunctions = mFunctions;
-        checkConfig();
-        updateVectors();
+//        checkConfig();
+//        updateVectors();
         semaphore = 0;
         semaphoreLockout = 2;
     }
 
-    private void checkConfig() throws JSONException {
+
+    public void createConfig() throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("firstBoot", false);
+        config = jsonObject;
+        writeToConfig();
+    }
+
+    public boolean checkForFirstBoot(){
         try {
             context.openFileInput("config.json");
             readConfig();
+            return false;
         }
-        catch (FileNotFoundException e) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("firstBoot", false);
-            config = jsonObject;
-            writeToConfig();
+        catch (FileNotFoundException | JSONException e) {
 
-            firstTimeInitTextFiles(); // add in condition for this to run
+            return true;
         }
-
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void firstTimeInitTextFiles(){
+    public void firstTimeInitTextFiles(){
         // temp writing arguments, needs to change later
         usedWords = new Vector<>();
         usedArticles = new Vector<>();
@@ -99,7 +102,7 @@ public class UserInformation {
     }
 
 
-    private void updateVectors(){
+    public void updateVectors(){
         usedWords = readUsedWordsFromFile();
         usedArticles = readUsedArticlesFromFile();
         userWords = readUserWordsFromFile();
