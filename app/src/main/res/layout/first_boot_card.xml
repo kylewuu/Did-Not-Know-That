@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView android:id="@+id/first_boot_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:background="@drawable/first_boot_card_background"
+    android:textColor="@color/dark_gray"
+    android:gravity="center"
+    android:text="Vancouver"
+    android:clickable="true"
+    android:onClick="firstBootCardOnClick"
+    android:fontFamily="@font/segoe"
+    >
+
+</TextView>
+
+

@@ -1,24 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FirstBootActivity">
+    tools:context=".FirstBootActivity"
+    android:orientation="vertical"
+    android:paddingTop="30dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingBottom="0dp"
+    >
 
-    <Button
-        android:id="@+id/advanceButton"
-        android:layout_width="110dp"
-        android:layout_height="100dp"
-        android:width="100dp"
-        android:height="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
-        android:text="Advance">
 
-    </Button>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:textSize="30dp"
+            android:textColor="#010101"
+            android:fontFamily="@font/segoe"
+            android:text="Please select everything you find interesting\n(3 minimum, but more is better)">
+
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/advanceButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/advance_icon"
+            android:visibility="invisible">
+
+        </ImageButton>
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="5dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/leftSideCards"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="20dp">
+
+                <include android:id="@+id/card0" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card1" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card2" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card3" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card4" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card5" layout="@layout/first_boot_card"></include>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rightSideCards"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="00dp"
+                android:layout_marginTop="75dp">
+
+                <include android:id="@+id/card6" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card7" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card8" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card9" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card10" layout="@layout/first_boot_card"></include>
+                <include android:id="@+id/card11" layout="@layout/first_boot_card"></include>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

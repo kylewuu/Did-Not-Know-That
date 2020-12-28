@@ -47,6 +47,7 @@
                     android:autoSizeMaxTextSize="100sp"
                     android:autoSizeStepGranularity="2sp"
                     tools:text="hello_world"
+                    android:fontFamily="@font/segoe"
                     android:layout_marginBottom="7dp"/>
 
 
@@ -58,7 +59,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     tools:text="hello_world"
-
+                    android:fontFamily="@font/segoe"
                     android:ellipsize="end"
                     android:maxLines="31"
                     />
@@ -68,6 +69,7 @@
                     android:id="@+id/pageIndicator"
                     android:layout_width="30dp"
                     android:layout_height="20dp"
+                    android:fontFamily="@font/segoe"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -82,6 +84,7 @@
                     tools:text="hello_world"
                     android:layout_marginTop="25dp"
                     android:clickable="true"
+                    android:fontFamily="@font/segoe"
                     android:onClick="linkTextOnClick"/>
 
 

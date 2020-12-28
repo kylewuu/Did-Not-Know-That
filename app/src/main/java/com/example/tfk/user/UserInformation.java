@@ -101,6 +101,28 @@ public class UserInformation {
         updateUserLikedWords(new String[] {});
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void firstTimeInitTextFilesBasedOnPreference(String[] chosenWords){
+        usedWords = new Vector<>();
+        usedArticles = new Vector<>();
+        userWords = new Vector<>();
+        parentWords = new Vector<>();
+        articleWords = new Vector<>();
+        userLikedWords = new Vector<>();
+
+        // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
+        updateUsedWords(new String[]{});
+        updateUsedArticles(new String[]{});
+//        updateUserWords(userStartWords);
+        updateUserWords(chosenWords);
+        updateArticleWords(new ArticleWords[]{});
+        updateParentWords(noParentWordsToParentWordsArray(chosenWords));
+//        updateParentWords(new ParentWords[]{new ParentWords("football", ""), new ParentWords("vancouver-kingsway", "")});
+        updateUserLikedWords(chosenWords);
+//        findMoreArticles();
+//        findMoreWords();
+    }
+
 
     public void updateVectors(){
         usedWords = readUsedWordsFromFile();

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         userInfo.updateVectors();
         cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
+        userInfo.findMoreWords();
     }
 
     public void bodyTextOnClickNext(View v){
