@@ -5,18 +5,20 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
-    android:paddingHorizontal="15dp"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp"
+    android:paddingHorizontal="20dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
     android:outlineProvider="bounds"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:elevation="2dp"
-        app:cardCornerRadius="15dp"
+        android:background="@color/white"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="16dp"
         android:id="@+id/cardView">
 
         <FrameLayout
@@ -31,61 +33,105 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_corner"
                 android:orientation="vertical"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="6dp"
-                android:gravity="right">
+                android:paddingVertical="15dp"
+                android:gravity="center_horizontal">
 
 
                 <TextView
                     android:id="@+id/titleText"
                     android:layout_width="match_parent"
-                    android:layout_height="75dp"
+                    android:layout_height="70dp"
                     android:gravity=""
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/main_blue"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="12sp"
                     android:autoSizeMaxTextSize="100sp"
                     android:autoSizeStepGranularity="2sp"
                     tools:text="hello_world"
+                    android:textStyle="bold"
                     android:fontFamily="@font/segoe"
-                    android:layout_marginBottom="7dp"/>
+                    android:layout_marginBottom="7dp"
+                    android:paddingLeft="0dp"
+                    android:paddingHorizontal="15dp"/>
 
 
                 <TextView
                     android:id="@+id/bodyText"
                     android:layout_width="match_parent"
-                    android:layout_height="555dp"
+                    android:layout_height="545dp"
                     android:gravity=""
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/gray_text"
                     android:textSize="15sp"
                     tools:text="hello_world"
                     android:fontFamily="@font/segoe"
                     android:ellipsize="end"
-                    android:maxLines="31"
+                    android:maxLines="27"
+                    android:paddingHorizontal="15dp"
                     />
 
 
-                <TextView
-                    android:id="@+id/pageIndicator"
-                    android:layout_width="30dp"
-                    android:layout_height="20dp"
-                    android:fontFamily="@font/segoe"
-                    android:textColor="@color/white">
-
-                </TextView>
-
-
-                <TextView
-                    android:id="@+id/linkText"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="23dp"
-                    android:textColor="@android:color/white"
-                    android:textSize="10sp"
-                    tools:text="hello_world"
-                    android:layout_marginTop="25dp"
-                    android:clickable="true"
-                    android:fontFamily="@font/segoe"
-                    android:onClick="linkTextOnClick"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:paddingHorizontal="15dp">
+
+                    <TextView
+                        android:id="@+id/linkText"
+                        android:layout_width="320dp"
+                        android:layout_height="12dp"
+                        android:textColor="@color/gray_text"
+                        android:textSize="10sp"
+                        tools:text="hello_world"
+                        android:layout_marginTop="1dp"
+                        android:fontFamily="@font/segoe"
+                        />
+
+                    <TextView
+                        android:id="@+id/pageIndicator"
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:fontFamily="@font/segoe"
+                        android:textStyle="bold"
+                        android:textColor="@color/main_blue"
+                        android:layout_alignParentRight="true"
+                        android:gravity="right|top">
+
+                    </TextView>
+
+
+
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:gravity="bottom"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="0dp"
+                    android:layout_marginTop="5dp">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/main_blue"
+                        android:textStyle="bold"
+                        android:text="OPEN IN BROWSER"
+                        android:clickable="true"
+                        android:onClick="linkTextOnClick"
+                        android:stateListAnimator="@null"
+                        android:elevation="2dp"
+                        android:layout_marginHorizontal="5dp">
+
+                    </Button>
+
+                </LinearLayout>
+
 
 
             </LinearLayout>

@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.example.tfk.R;
 
 import java.util.List;
@@ -26,12 +28,14 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
     public TextView[] bodyArray;
     public TextView[] pageIndicatorArray;
+    public CardView[] cardViewArray;
 
 
     public ArrayAdapterCustom(Context context, int resourceId, List<Cards> items) {
         super(context, resourceId, items);
         bodyArray = new TextView[100];
         pageIndicatorArray = new TextView[100];
+        cardViewArray = new CardView[100];
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -47,9 +51,11 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         TextView body = (TextView) convertView.findViewById(R.id.bodyText);
         TextView link = (TextView) convertView.findViewById(R.id.linkText);
         TextView pageIndicator = (TextView) convertView.findViewById(R.id.pageIndicator);
+        CardView cardView = (CardView) convertView.findViewById(R.id.cardView);
 
         bodyArray[position] = body;
         pageIndicatorArray[position] = pageIndicator;
+        cardViewArray[position] = cardView;
 
         title.setText(card_item.getTitle() + " : " + card_item.getWord()); // to be removed, this is just to visualize the words
         title.setText(card_item.getTitle()); // to be uncommented
@@ -62,7 +68,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         }
         link.setText(card_item.getLink());
 
-//        System.out.println("Running on: " + card_item.getBody()[0]);
+        System.out.println("Running on: " + card_item.getBody()[0]);
 
 
         return convertView;

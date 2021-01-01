@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -92,7 +93,7 @@ public class FirstBootActivity extends AppCompatActivity {
 
         TextView[] cards = new TextView[numberOfCards];
         for(int i=0;i<numberOfCards;i++){
-            cards[i] = findViewById(getResources().getIdentifier("card" + String.valueOf(i), "id", getPackageName()));
+            cards[i] = (TextView) ((LinearLayout) findViewById(getResources().getIdentifier("card" + String.valueOf(i), "id", getPackageName()))).getChildAt(0);
             cards[i].setText(wordsToChooseFrom[i]);
         }
 

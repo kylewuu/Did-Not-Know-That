@@ -22,7 +22,7 @@
     </TextView>
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/frame"
-        android:background="#d0def5"
+        android:background="@drawable/main_background_gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:rotation_degrees="15.5"

@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_blue">#6789FB</color>
     <color name="dark_gray">#545454</color>
+    <color name="action_bar">#e3e3e3</color>
+    <color name="gray_text">#292929</color>
 </resources>

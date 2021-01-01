@@ -2,6 +2,7 @@ package com.example.tfk.UI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -9,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.tfk.R;
@@ -141,6 +143,8 @@ public class CardHandler {
             }
         });
     }
+
+
 
 
 
