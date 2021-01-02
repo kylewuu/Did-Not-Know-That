@@ -17,12 +17,14 @@ public class FindMoreArticles extends AsyncTask<Void, Void, String> {
     UserInformation userInfo;
     String url;
     String word;
+    boolean loopFlag;
 
 
-    public FindMoreArticles(UserInformation userInfo, String url, String word) {
+    public FindMoreArticles(UserInformation userInfo, String url, String word, boolean loop) {
         this.userInfo = userInfo;
         this.url = url;
         this.word = word;
+        this.loopFlag = loop;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class FindMoreArticles extends AsyncTask<Void, Void, String> {
                 System.out.println("Added url: " + url);
             }
 
-            if(userInfo.articleWords.size() < 5 && userInfo.userWords.size() > 5) userInfo.findMoreArticles();
+            if(userInfo.articleWords.size() < 5 && userInfo.userWords.size() > 5 && loopFlag) userInfo.findMoreArticles();
 
         } catch (IOException e) {
             e.printStackTrace();

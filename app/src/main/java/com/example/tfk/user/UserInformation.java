@@ -656,7 +656,7 @@ public class UserInformation {
                         System.out.println(task.getException());
                     }
                 }
-            });;
+            });
         }
     }
 
@@ -704,7 +704,7 @@ public class UserInformation {
         removeWordFromUserWords(chosenWord);
         moveUserWordToUsedWords(chosenWord);
         removeUserWordFromParentWords(chosenWord);
-        callFindMoreArticles(chosenWord);
+        callFindMoreArticles(chosenWord, true);
     }
 
     public synchronized void findMoreArticles(){
@@ -713,7 +713,7 @@ public class UserInformation {
             removeWordFromUserWords(chosenWord);
             moveUserWordToUsedWords(chosenWord);
             removeUserWordFromParentWords(chosenWord);
-            callFindMoreArticles(chosenWord);
+            callFindMoreArticles(chosenWord, true);
 
             writeToUsedArticles();
             writeToUserWords();
@@ -751,10 +751,10 @@ public class UserInformation {
         }
     }
 
-    public synchronized void callFindMoreArticles(String word){
+    public synchronized void callFindMoreArticles(String word, boolean loopFlag){
         String url = "https://en.wikipedia.org/w/index.php?search="+word+"&title=Special%3ASearch&go=Go&ns0=1";
 
-        (new FindMoreArticles(this, url, word)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        (new FindMoreArticles(this, url, word, loopFlag)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public synchronized ArticleWords getArticleAndWord(){
@@ -809,6 +809,77 @@ public class UserInformation {
         writeToUsedWords();
         writeToUserWords();
         writeToParentWords();
+
+    }
+
+    public void getArticleCardAsQuickAsPossible(boolean rerun){
+
+        // choose article if there are user words
+        if(userWords.size() > 0) {
+            String chosenWord = this.chooseRandomUserWord();
+            removeWordFromUserWords(chosenWord);
+            moveUserWordToUsedWords(chosenWord);
+            removeUserWordFromParentWords(chosenWord);
+            callFindMoreArticles(chosenWord, false);
+
+            writeToUsedArticles();
+            writeToUserWords();
+            writeToUsedWords();
+            writeToParentWords();
+            writeToArticleWords();
+
+            if(rerun) getArticleCardAsQuickAsPossible(false);
+        }
+
+        // get one more word then get user article
+        else {
+
+            String chosenWord = chooseRandomUserWordForFindMoreWords();
+
+            Map<String, Object> data = new HashMap<>();
+            String targetWord = chosenWord;
+            String[] bannedWords = concatArray(this.getUsedWords().toArray(new String[this.getUsedWords().size()]), userWords.toArray(new String[userWords.size()]));
+            data.put("targetWord", targetWord);
+            data.put("bannedWords", new JSONArray(Arrays.asList(bannedWords)));
+
+            mFunctions.getHttpsCallable("findTopic")
+                    .call(data)
+                    .continueWith(new Continuation<HttpsCallableResult, String[]>() {
+                        @Override
+                        public String[] then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                            String[] result = task.getResult().getData().toString().substring(1, task.getResult().getData().toString().length() -1).split("\\s*,\\s*");
+                            return result;
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<String[]>() {
+                @Override
+                public void onComplete(@NonNull Task<String[]> task) {
+                    if(task.isSuccessful()){
+                        String[] wordsFound = task.getResult();
+                        if(wordsFound.length > 0){
+                            System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(wordsFound));
+                            ParentWords[] parentWordsToAdd = new ParentWords[wordsFound.length];
+                            for(int i=0;i<wordsFound.length;i++){
+                                parentWordsToAdd[i] = new ParentWords(wordsFound[i], targetWord);
+                            }
+                            updateParentWords(parentWordsToAdd);
+                            updateUserWords(wordsFound);
+
+                            getArticleCardAsQuickAsPossible(true);
+
+                        }
+
+                    }
+                    else if(task.isComplete())
+                    {
+                        System.out.println(task.getException());
+                    }
+                }
+            });
+        }
+
+
+
+
 
     }
 

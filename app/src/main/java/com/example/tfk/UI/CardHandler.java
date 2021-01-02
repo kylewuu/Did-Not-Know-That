@@ -21,6 +21,8 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +64,7 @@ public class CardHandler {
             if(userInfo.articleWords.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
             userInfo.findMoreWords();
         }
-        else cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", ""}));
+        else noCardsLeft();
 
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
@@ -74,7 +76,7 @@ public class CardHandler {
                 // this is the simplest way to delete an object from the Adapter (/AdapterView)
                 Log.d("LIST", "removed object!");
                 Log.d("Number of cards left", String.valueOf(cards.size()));
-                if(cards.size() <= 1) cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
+                if(cards.size() <= 1) noCardsLeft();
                 cards.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -105,7 +107,7 @@ public class CardHandler {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
 
-                addNewCard();
+                if(userInfo.articleWords.size() >= 1) addNewCard();
                 arrayAdapter.notifyDataSetChanged();
                 i++;
                 if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
@@ -138,12 +140,46 @@ public class CardHandler {
         service.submit(new Runnable() {
             public void run() {
                 Log.d("LIST", "Adding new card");
+
                 if(userInfo.articleWords.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
                 if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
             }
         });
     }
 
+
+    private void noCardsLeft(){
+//        cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
+        userInfo.getArticleCardAsQuickAsPossible(true);
+        Timer t = new Timer( );
+        t.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                System.out.println("How many articles: " + userInfo.articleWords.size());
+                System.out.println("How many cards: " + cards.size());
+
+                if(userInfo.articleWords.size() >= 2) {
+
+//                    cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            arrayAdapter.notifyDataSetChanged();
+                            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+                            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+                            t.cancel();
+                        }
+                    });
+
+
+
+                }
+
+            }
+        }, 1000,5000);
+    }
 
 
 
