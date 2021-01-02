@@ -86,6 +86,8 @@
                         tools:text="hello_world"
                         android:layout_marginTop="1dp"
                         android:fontFamily="@font/segoe"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         />
 
                     <TextView

@@ -71,7 +71,7 @@ public class FirstBootActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     private void createCards(){
         String[] wordsToChooseFrom = new String[]{
                 "technology",

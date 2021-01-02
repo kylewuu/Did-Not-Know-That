@@ -7,6 +7,8 @@
     tools:context=".MainActivity"
     android:id="@+id/MainActivity">
 
+
+
     <TextView
         android:layout_width="157dp"
         android:layout_height="151dp"
@@ -27,5 +29,24 @@
         android:layout_height="match_parent"
         app:rotation_degrees="15.5"
         tools:context=".MyActivity" />
+
+    <com.rd.PageIndicatorView
+        android:id="@+id/loadingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:piv_animationType="worm"
+        app:piv_dynamicCount="true"
+        app:piv_selectedColor="@color/main_blue"
+        app:piv_unselectedColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="invisible"
+        app:piv_count="6"
+        app:piv_padding="25dp"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

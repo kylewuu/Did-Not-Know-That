@@ -501,7 +501,7 @@ public class UserInformation {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateUserWords(String[] data){
         for(int i = 0; i < data.length; i++){
-            userWords.add(data[i]);
+            if(!userWords.contains(data[i])) userWords.add(data[i]);
         }
 
         userWords = userWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
@@ -512,7 +512,7 @@ public class UserInformation {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void updateParentWords(ParentWords[] data){
         for(int i = 0; i < data.length; i++){
-            parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
+            if(!parentWords.contains(new ParentWords(data[i].getWord(), data[i].getParent()))) parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
         }
         parentWords = parentWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
         writeToParentWords();
@@ -856,7 +856,7 @@ public class UserInformation {
                     if(task.isSuccessful()){
                         String[] wordsFound = task.getResult();
                         if(wordsFound.length > 0){
-                            System.out.println("New added words using " + targetWord + ": "+ Arrays.toString(wordsFound));
+                            System.out.println("New (quick as possible) added words using  " + targetWord + ": "+ Arrays.toString(wordsFound));
                             ParentWords[] parentWordsToAdd = new ParentWords[wordsFound.length];
                             for(int i=0;i<wordsFound.length;i++){
                                 parentWordsToAdd[i] = new ParentWords(wordsFound[i], targetWord);

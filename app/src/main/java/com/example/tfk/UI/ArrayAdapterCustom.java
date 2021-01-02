@@ -68,7 +68,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         }
         link.setText(card_item.getLink());
 
-        System.out.println("Running on: " + card_item.getBody()[0]);
+//        System.out.println("Running on: " + card_item.getBody()[0]);
 
 
         return convertView;

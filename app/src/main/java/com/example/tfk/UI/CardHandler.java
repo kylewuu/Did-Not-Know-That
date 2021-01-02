@@ -18,6 +18,7 @@ import com.example.tfk.user.ParentWords;
 import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Articles;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,7 @@ public class CardHandler {
                 userInfo.checkSupplyOfWordsAndArticles();
                 Cards card = (Cards) dataObject;
                 userInfo.removeUserWordOnDislike(card.getWord());
-                Toast.makeText(mContext, "Left!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "Left!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -100,7 +101,7 @@ public class CardHandler {
                 String word = card.getWord();
                 if(word != "CardDeckEmpty") userInfo.updateUserLikedWords(new String[]{word});
                 userInfo.checkSupplyOfWordsAndArticles();
-                Toast.makeText(mContext, "Right!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "Right!", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -150,14 +151,18 @@ public class CardHandler {
 
     private void noCardsLeft(){
 //        cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
+
+        PageIndicatorView loadingView = activity.findViewById(R.id.loadingView);
+        loadingView.setSelection(2);
+        LoadingAnimation loadingAnimation = new LoadingAnimation(loadingView, activity);
+
         userInfo.getArticleCardAsQuickAsPossible(true);
         Timer t = new Timer( );
         t.scheduleAtFixedRate(new TimerTask() {
 
             @Override
             public void run() {
-                System.out.println("How many articles: " + userInfo.articleWords.size());
-                System.out.println("How many cards: " + cards.size());
+
 
                 if(userInfo.articleWords.size() >= 2) {
 
@@ -170,6 +175,7 @@ public class CardHandler {
                             cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
                             cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
                             t.cancel();
+                            loadingAnimation.stop();
                         }
                     });
 
@@ -180,6 +186,7 @@ public class CardHandler {
             }
         }, 1000,5000);
     }
+
 
 
 

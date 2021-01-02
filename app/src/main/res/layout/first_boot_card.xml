@@ -16,7 +16,7 @@
         android:clickable="true"
         android:onClick="firstBootCardOnClick"
         android:fontFamily="@font/segoe"
-        android:elevation="6dp"
+        android:elevation="16dp"
         >
 
     </TextView>
