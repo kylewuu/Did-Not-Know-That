@@ -70,16 +70,17 @@
                     />
 
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:orientation="horizontal"
                     android:layout_marginTop="5dp"
                     android:paddingHorizontal="15dp">
 
                     <TextView
                         android:id="@+id/linkText"
-                        android:layout_width="320dp"
+                        android:layout_width="300dp"
                         android:layout_height="12dp"
                         android:textColor="@color/gray_text"
                         android:textSize="10sp"
@@ -88,6 +89,7 @@
                         android:fontFamily="@font/segoe"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:layout_weight="0.9"
                         />
 
                     <TextView
@@ -105,7 +107,7 @@
 
 
 
-                </RelativeLayout>
+                </LinearLayout>
 
 
                 <LinearLayout
