@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.tfk.UI.Cards;
 import com.example.tfk.user.ArticleWords;
 import com.example.tfk.user.UserInformation;
 import com.google.android.gms.tasks.Continuation;
@@ -54,10 +55,11 @@ public class Articles{
 //
 //    }
 
-    public synchronized String[] getAllArticlesElements(UserInformation userInfo) {
+    public synchronized String[] getAllArticlesElements(UserInformation userInfo, ArticleWords[] articlesInDeck) {
         String[] ret = new String[4]; // title, body, link
 //        String url = userInfo.getTargetArticle();
-        ArticleWords articleWord = userInfo.getArticleAndWord();
+//        ArticleWords articleWord = userInfo.getArticleAndWord();
+        ArticleWords articleWord = userInfo.getArticleAndWordMinusDeckArticleWords(articlesInDeck);
         String url = articleWord.getUrl();
         String word = articleWord.getWord();
         ret[2] = url;

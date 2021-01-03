@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.tfk.R;
+import com.example.tfk.user.ArticleWords;
 import com.example.tfk.user.ParentWords;
 import com.example.tfk.user.UserInformation;
 import com.example.tfk.webscraping.Articles;
@@ -60,9 +61,9 @@ public class CardHandler {
         articles = new Articles(userInfo);
 
 
-        if(userInfo.articleWords.size() > 0) {
-            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-            if(userInfo.articleWords.size() > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+        if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) {
+            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+            if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
             userInfo.findMoreWords();
         }
         else noCardsLeft();
@@ -78,6 +79,7 @@ public class CardHandler {
                 Log.d("LIST", "removed object!");
                 Log.d("Number of cards left", String.valueOf(cards.size()));
                 if(cards.size() <= 1) noCardsLeft();
+                userInfo.removeArticleAndWord(new ArticleWords(cards.get(0).getLink(), cards.get(0).getWord()));
                 cards.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -108,10 +110,10 @@ public class CardHandler {
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
 
-                if(userInfo.articleWords.size() >= 1) addNewCard();
+                if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) addNewCard();
                 arrayAdapter.notifyDataSetChanged();
                 i++;
-                if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >=1 ) addNewCard();
             }
 
             @Override
@@ -142,8 +144,8 @@ public class CardHandler {
             public void run() {
                 Log.d("LIST", "Adding new card");
 
-                if(userInfo.articleWords.size() >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-                if(cards.size() < maxSizeOfCardsDeck && userInfo.articleWords.size() >=1 ) addNewCard();
+                if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+                if(cards.size() < maxSizeOfCardsDeck && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >=1 ) addNewCard();
             }
         });
     }
@@ -164,7 +166,7 @@ public class CardHandler {
             public void run() {
 
 
-                if(userInfo.articleWords.size() >= 2) {
+                if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 2) {
 
 //                    cards.add(new Cards(new String[]{"Sorry!", "You are way too quick for me to keep up. Please wait a few seconds and swipe again.", "", "CardDeckEmpty"}));
 
@@ -172,8 +174,8 @@ public class CardHandler {
                         @Override
                         public void run() {
                             arrayAdapter.notifyDataSetChanged();
-                            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
-                            cards.add(new Cards(articles.getAllArticlesElements(userInfo)));
+                            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+                            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
                             t.cancel();
                             loadingAnimation.stop();
                         }
@@ -185,6 +187,17 @@ public class CardHandler {
 
             }
         }, 1000,5000);
+    }
+
+    private ArticleWords[] getArticlesWordsFromCard(List<Cards> cardDeck){
+        ArticleWords[] articleWords = new ArticleWords[cardDeck.size()];
+
+        for(int i=0;i<cardDeck.size();i++){
+            articleWords[i] = new ArticleWords(cardDeck.get(i).getLink(), cardDeck.get(i).getWord());
+        }
+
+        return articleWords;
+
     }
 
 

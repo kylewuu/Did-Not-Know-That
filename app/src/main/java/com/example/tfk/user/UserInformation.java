@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.example.tfk.webscraping.FindMoreArticles;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,10 +28,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class UserInformation {
@@ -763,10 +766,62 @@ public class UserInformation {
         int rnd = new Random().nextInt(array.length);
         ArticleWords ret = array[rnd];
         updateUsedArticles(new String[]{array[rnd].getUrl()});
-        articleWords.remove(array[rnd]);
-        writeToArticleWords();
+//        articleWords.remove(array[rnd]);
+//        writeToArticleWords();
         findMoreArticles();
         return ret;
+    }
+
+    public synchronized ArticleWords getArticleAndWordMinusDeckArticleWords(ArticleWords[] deckArticleWords){
+        // add chosen word to usedWords and remove from userWords
+        ArticleWords[] allArticleWordsArray = articleWords.toArray(new ArticleWords[articleWords.size()]);
+        ArticleWords[] array = subtractArray(allArticleWordsArray, deckArticleWords);
+        int rnd = new Random().nextInt(array.length);
+        ArticleWords ret = array[rnd];
+        updateUsedArticles(new String[]{ret.getUrl()});
+//        articleWords.remove(array[rnd]);
+//        writeToArticleWords();
+        findMoreArticles();
+        return ret;
+    }
+
+    public synchronized int getNumberOfUnusedArticles(ArticleWords[] deckArticleWords){
+
+        return articleWords.size() - deckArticleWords.length;
+    }
+
+    public synchronized ArticleWords[] subtractArray(ArticleWords[] a, ArticleWords[] b){
+
+        Vector<ArticleWords> aVector = new Vector<ArticleWords>(Arrays.asList(a));
+        Vector<ArticleWords> bVector = new Vector<ArticleWords>(Arrays.asList(b));
+
+        ArticleWords[] ret = new ArticleWords[a.length - b.length];
+        int j = 0;
+        for(int i=0;i<aVector.size();i++){
+//            if(!Arrays.asList(b).contains(a[i])){
+            if(!containsArticleWord(b, a[i])){
+//                if(bVector.size() > 0) System.out.println("b vector : " + bVector.get(0).getUrl() + " : " + bVector.get(0).getWord());
+//                System.out.println("a vector : " + aVector.get(i).getUrl() + " : " + aVector.get(i).getWord());
+                ret[j] = a[i];
+                j++;
+            }
+        }
+        return ret;
+    }
+
+    private synchronized boolean containsArticleWord(ArticleWords[] a, ArticleWords b){
+        for(int i=0;i<a.length;i++){
+            if(a[i].getUrl() == b.getUrl()) return true;
+        }
+
+        return false;
+    }
+
+
+    public synchronized void removeArticleAndWord(ArticleWords articleWord){
+        System.out.println("size before remove: " + articleWords.size());
+        articleWords.remove(articleWord);
+        System.out.println("size after remove: " + articleWords.size());
     }
 
     public synchronized void removeUserWordOnDislike(String word){
