@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,12 +39,12 @@ import java.util.stream.Stream;
 
 public class UserInformation {
 
-    public Vector<String> usedWords;
-    public Vector<String> usedArticles;
-    public Vector<String> userWords;
-    public Vector<ParentWords> parentWords;
-    public Vector<ArticleWords> articleWords;
-    public Vector<String> userLikedWords;
+    public ArrayList<String> usedWords;
+    public ArrayList<String> usedArticles;
+    public ArrayList<String> userWords;
+    public ArrayList<ParentWords> parentWords;
+    public ArrayList<ArticleWords> articleWords;
+    public ArrayList<String> userLikedWords;
     public JSONObject config;
     public Context context;
     private FirebaseFunctions mFunctions;
@@ -56,7 +57,7 @@ public class UserInformation {
         context = applicationContext;
         this.mFunctions = mFunctions;
 //        checkConfig();
-//        updateVectors();
+//        updateArrayLists();
         semaphore = 0;
         semaphoreLockout = 2;
     }
@@ -84,12 +85,12 @@ public class UserInformation {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void firstTimeInitTextFiles(){
         // temp writing arguments, needs to change later
-        usedWords = new Vector<>();
-        usedArticles = new Vector<>();
-        userWords = new Vector<>();
-        parentWords = new Vector<>();
-        articleWords = new Vector<>();
-        userLikedWords = new Vector<>();
+        usedWords = new ArrayList<>();
+        usedArticles = new ArrayList<>();
+        userWords = new ArrayList<>();
+        parentWords = new ArrayList<>();
+        articleWords = new ArrayList<>();
+        userLikedWords = new ArrayList<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
         String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk"};
@@ -106,12 +107,12 @@ public class UserInformation {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void firstTimeInitTextFilesBasedOnPreference(String[] chosenWords){
-        usedWords = new Vector<>();
-        usedArticles = new Vector<>();
-        userWords = new Vector<>();
-        parentWords = new Vector<>();
-        articleWords = new Vector<>();
-        userLikedWords = new Vector<>();
+        usedWords = new ArrayList<>();
+        usedArticles = new ArrayList<>();
+        userWords = new ArrayList<>();
+        parentWords = new ArrayList<>();
+        articleWords = new ArrayList<>();
+        userLikedWords = new ArrayList<>();
 
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{});
@@ -127,7 +128,7 @@ public class UserInformation {
     }
 
 
-    public void updateVectors(){
+    public void updateArrayLists(){
         usedWords = readUsedWordsFromFile();
         usedArticles = readUsedArticlesFromFile();
         userWords = readUserWordsFromFile();
@@ -153,9 +154,9 @@ public class UserInformation {
         return ret;
     }
 
-    private Vector<String> readUsedArticlesFromFile(){
+    private ArrayList<String> readUsedArticlesFromFile(){
 
-        Vector<String> ret = new Vector<String>();
+        ArrayList<String> ret = new ArrayList<String>();
 
         try {
             InputStream inputStream = context.openFileInput("usedArticles.txt");
@@ -187,9 +188,9 @@ public class UserInformation {
 
     }
 
-    private Vector<String> readUsedWordsFromFile(){
+    private ArrayList<String> readUsedWordsFromFile(){
 
-        Vector<String> ret = new Vector<String>();
+        ArrayList<String> ret = new ArrayList<String>();
 
         try {
             InputStream inputStream = context.openFileInput("usedWords.txt");
@@ -222,9 +223,9 @@ public class UserInformation {
 
     }
 
-    private Vector<String> readUserWordsFromFile(){
+    private ArrayList<String> readUserWordsFromFile(){
 
-        Vector<String> ret = new Vector<String>();
+        ArrayList<String> ret = new ArrayList<String>();
 
         try {
             InputStream inputStream = context.openFileInput("userWords.txt");
@@ -257,8 +258,8 @@ public class UserInformation {
     }
 
 
-    private Vector<ParentWords> readParentWordsFromFile(){
-        Vector<ParentWords> ret = new Vector<>();
+    private ArrayList<ParentWords> readParentWordsFromFile(){
+        ArrayList<ParentWords> ret = new ArrayList<>();
 
         try {
             InputStream inputStream = context.openFileInput("parentWords.txt");
@@ -290,8 +291,8 @@ public class UserInformation {
         return ret;
     }
 
-    private Vector<ArticleWords> readArticleWordsFromFile(){
-        Vector<ArticleWords> ret = new Vector<>();
+    private ArrayList<ArticleWords> readArticleWordsFromFile(){
+        ArrayList<ArticleWords> ret = new ArrayList<>();
 
         try {
             InputStream inputStream = context.openFileInput("articleWords.txt");
@@ -323,9 +324,9 @@ public class UserInformation {
         return ret;
     }
 
-    private Vector<String> readUserLikedWordsFromFile(){
+    private ArrayList<String> readUserLikedWordsFromFile(){
 
-        Vector<String> ret = new Vector<String>();
+        ArrayList<String> ret = new ArrayList<String>();
 
         try {
             InputStream inputStream = context.openFileInput("userLikedWords.txt");
@@ -507,7 +508,7 @@ public class UserInformation {
             if(!userWords.contains(data[i])) userWords.add(data[i]);
         }
 
-        userWords = userWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
+        userWords = userWords.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
         writeToUserWords();
     }
 
@@ -517,7 +518,7 @@ public class UserInformation {
         for(int i = 0; i < data.length; i++){
             if(!parentWords.contains(new ParentWords(data[i].getWord(), data[i].getParent()))) parentWords.add(new ParentWords(data[i].getWord(), data[i].getParent()));
         }
-        parentWords = parentWords.stream().distinct().collect(Collectors.toCollection(Vector::new));
+        parentWords = parentWords.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
         writeToParentWords();
 
     }
@@ -544,11 +545,11 @@ public class UserInformation {
     }
 
 
-    public Vector<String> getUsedWords(){
+    public ArrayList<String> getUsedWords(){
         return usedWords;
     }
 
-    public Vector<String> getUserWords(){
+    public ArrayList<String> getUserWords(){
         return userWords;
     }
 
@@ -792,26 +793,36 @@ public class UserInformation {
 
     public synchronized ArticleWords[] subtractArray(ArticleWords[] a, ArticleWords[] b){
 
-        Vector<ArticleWords> aVector = new Vector<ArticleWords>(Arrays.asList(a));
-        Vector<ArticleWords> bVector = new Vector<ArticleWords>(Arrays.asList(b));
+        ArrayList<ArticleWords> aArrayList = new ArrayList<ArticleWords>(Arrays.asList(a));
+        ArrayList<ArticleWords> bArrayList = new ArrayList<ArticleWords>(Arrays.asList(b));
 
         ArticleWords[] ret = new ArticleWords[a.length - b.length];
         int j = 0;
-        for(int i=0;i<aVector.size();i++){
-//            if(!Arrays.asList(b).contains(a[i])){
+        for(int i=0;i<aArrayList.size();i++){
             if(!containsArticleWord(b, a[i])){
-//                if(bVector.size() > 0) System.out.println("b vector : " + bVector.get(0).getUrl() + " : " + bVector.get(0).getWord());
-//                System.out.println("a vector : " + aVector.get(i).getUrl() + " : " + aVector.get(i).getWord());
+
                 ret[j] = a[i];
                 j++;
             }
         }
+        printWordOfArticleWords(a, "a");
+        printWordOfArticleWords(b, "b");
+        printWordOfArticleWords(ret, "ret");
+
         return ret;
+    }
+
+    // TODO COMMENT THIS OUT
+    private void printWordOfArticleWords(ArticleWords[] a, String name){
+        System.out.println("printing: " + name);
+        for(int i=0;i<a.length;i++){
+            System.out.println(a[i].getWord());
+        }
     }
 
     private synchronized boolean containsArticleWord(ArticleWords[] a, ArticleWords b){
         for(int i=0;i<a.length;i++){
-            if(a[i].getUrl() == b.getUrl()) return true;
+            if(a[i].getWord().equals(b.getWord())) return true;
         }
 
         return false;
@@ -819,9 +830,7 @@ public class UserInformation {
 
 
     public synchronized void removeArticleAndWord(ArticleWords articleWord){
-        System.out.println("size before remove: " + articleWords.size());
-        articleWords.remove(articleWord);
-        System.out.println("size after remove: " + articleWords.size());
+        removeArticleWordElement(articleWord);
     }
 
     public synchronized void removeUserWordOnDislike(String word){
@@ -829,8 +838,7 @@ public class UserInformation {
     }
 
     private synchronized void removeAllChildrenWordsFromParentWordAndUserWords(String word){
-//        System.out.println("Word to remove: " + word);
-        Vector<String> wordsToRemove = new Vector<>();
+        ArrayList<String> wordsToRemove = new ArrayList<>();
         wordsToRemove.add(word.toLowerCase());
         for(int i=0;i<parentWords.size();i++){
             String tempWord = parentWords.get(i).getParent();
@@ -962,5 +970,12 @@ public class UserInformation {
         System.arraycopy(array2, 0, result, aLen, bLen);
 
         return result;
+    }
+
+    public void removeArticleWordElement(ArticleWords e){
+        for(int i=0;i<articleWords.size();i++){
+            if(articleWords.get(i).getUrl() == e.getUrl()) articleWords.remove(i--);
+
+        }
     }
 }

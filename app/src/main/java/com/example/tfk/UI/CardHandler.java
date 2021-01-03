@@ -62,8 +62,8 @@ public class CardHandler {
 
 
         if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) {
-            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
-            if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+            addSynchronized();
+            if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) addSynchronized();
             userInfo.findMoreWords();
         }
         else noCardsLeft();
@@ -144,7 +144,7 @@ public class CardHandler {
             public void run() {
                 Log.d("LIST", "Adding new card");
 
-                if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+                if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) addSynchronized();
                 if(cards.size() < maxSizeOfCardsDeck && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >=1 ) addNewCard();
             }
         });
@@ -174,8 +174,8 @@ public class CardHandler {
                         @Override
                         public void run() {
                             arrayAdapter.notifyDataSetChanged();
-                            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
-                            cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+                            addSynchronized();
+                            addSynchronized();
                             t.cancel();
                             loadingAnimation.stop();
                         }
@@ -189,7 +189,8 @@ public class CardHandler {
         }, 1000,5000);
     }
 
-    private ArticleWords[] getArticlesWordsFromCard(List<Cards> cardDeck){
+    private synchronized ArticleWords[] getArticlesWordsFromCard(List<Cards> cardDeck){
+
         ArticleWords[] articleWords = new ArticleWords[cardDeck.size()];
 
         for(int i=0;i<cardDeck.size();i++){
@@ -200,29 +201,16 @@ public class CardHandler {
 
     }
 
+    private synchronized void addSynchronized(){
+        cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+    }
 
 
 
 
 
-//    static void makeToast(Context ctx, String s){
-//        Toast.makeText(ctx, s, Toast.LENGTH_SHORT).show();
-//    }
-//
-//
-//    @OnClick(R.id.right)
-//    public void right() {
-//        /**
-//         * Trigger the right event manucardsly.
-//         */
-//        flingContainer.getTopCardListener().selectRight();
-//    }
-//
-//    @OnClick(R.id.left)
-//    public void left() {
-//        flingContainer.getTopCardListener().selectLeft();
-//    }
-//
+
+
 
 
 

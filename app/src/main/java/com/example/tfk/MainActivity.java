@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent,0);
             }
             else {
-                userInfo.updateVectors();
+                userInfo.updateArrayLists();
                 cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
             }
         } catch (JSONException e) {
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        userInfo.updateVectors();
+        userInfo.updateArrayLists();
         cardHandler = new CardHandler(MainActivity.this, userInfo); // should pass in the cards themselves instead of just the titles and such
         userInfo.findMoreWords();
     }
