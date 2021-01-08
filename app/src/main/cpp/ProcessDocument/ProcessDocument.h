@@ -21,6 +21,7 @@ public:
     void removeWhiteSpace();
     void removeNewLines();
     void breakDownSentences();
+    void editSentences();
     void countWordFrequency();
     void rankSentences();
     void deallocateVariables();

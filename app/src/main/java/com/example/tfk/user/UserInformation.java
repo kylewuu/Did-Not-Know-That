@@ -93,7 +93,7 @@ public class UserInformation {
         userLikedWords = new ArrayList<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
-        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Les_Chutes-de-la-Chaudi%C3%A8re"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip", "slamdunk", "tuplets"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
@@ -117,14 +117,11 @@ public class UserInformation {
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{});
         updateUsedArticles(new String[]{});
-//        updateUserWords(userStartWords);
         updateUserWords(chosenWords);
         updateArticleWords(new ArticleWords[]{});
         updateParentWords(noParentWordsToParentWordsArray(chosenWords));
-//        updateParentWords(new ParentWords[]{new ParentWords("football", ""), new ParentWords("vancouver-kingsway", "")});
         updateUserLikedWords(chosenWords);
-//        findMoreArticles();
-//        findMoreWords();
+
     }
 
 
@@ -805,20 +802,20 @@ public class UserInformation {
                 j++;
             }
         }
-        printWordOfArticleWords(a, "a");
-        printWordOfArticleWords(b, "b");
-        printWordOfArticleWords(ret, "ret");
+//        printWordOfArticleWords(a, "a");
+//        printWordOfArticleWords(b, "b");
+//        printWordOfArticleWords(ret, "ret");
 
         return ret;
     }
 
     // TODO COMMENT THIS OUT
-    private void printWordOfArticleWords(ArticleWords[] a, String name){
-        System.out.println("printing: " + name);
-        for(int i=0;i<a.length;i++){
-            System.out.println(a[i].getWord());
-        }
-    }
+//    private void printWordOfArticleWords(ArticleWords[] a, String name){
+//        System.out.println("printing: " + name);
+//        for(int i=0;i<a.length;i++){
+//            System.out.println(a[i].getWord());
+//        }
+//    }
 
     private synchronized boolean containsArticleWord(ArticleWords[] a, ArticleWords b){
         for(int i=0;i<a.length;i++){

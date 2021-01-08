@@ -63,7 +63,10 @@ public class FirstBootActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                userInfo.firstTimeInitTextFilesBasedOnPreference(Arrays.copyOf(chosenWords.toArray(), chosenWords.toArray().length, String[].class));
+
+                // TODO change it back to the dynamic init text files instead of the fake data
+                // userInfo.firstTimeInitTextFilesBasedOnPreference(Arrays.copyOf(chosenWords.toArray(), chosenWords.toArray().length, String[].class));
+                userInfo.firstTimeInitTextFiles();
 
                 Intent intent = new Intent();
                 setResult(RESULT_OK,intent );

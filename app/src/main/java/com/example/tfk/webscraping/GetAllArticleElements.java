@@ -36,7 +36,7 @@ public class GetAllArticleElements extends AsyncTask<String, Void, Document> {
 
             for(Element tempElement : document.select("p")){
                 if(tempElement != null){
-                    if(tempElement.text().indexOf(" may refer to:") != -1){
+                    if(tempElement.text().indexOf("ay refer to:") != -1){
                         return parseReferToPage(document); // if refer to page
                     }
 

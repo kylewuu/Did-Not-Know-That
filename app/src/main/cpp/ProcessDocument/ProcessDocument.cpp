@@ -30,6 +30,7 @@ ProcessDocument::ProcessDocument(string x){
     resetVariables();
 
     rawDocument = x;
+
     string stopwordsTemp[] = {"ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than"};
     for(int i=0; i<sizeof(stopwordsTemp)/sizeof(stopwordsTemp[0]);i++)
     {
@@ -41,12 +42,6 @@ ProcessDocument::ProcessDocument(string x){
 
 void ProcessDocument::resetVariables()
 {
-//    sentences.clear();
-//    sentences.resize(100);
-//    rawDocument = "";
-//    wordFrequency.clear();
-//    sentenceRanking.clear();
-//    scoreCutOff = 0;
     sentencesVectorSize = 0;
     rawDocument = "";
 
@@ -60,23 +55,15 @@ void ProcessDocument::deallocateVariables()
 }
 
 string ProcessDocument::mainLoop(){
-
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.5 trace");
     removeSquareBrackets();
-
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.25 trace");
     removeNewLines();
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.5 trace");
     replace("&nbsp;"," ");
     replace("&amp;","&");
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.6 trace");
     removeWhiteSpace();
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.7 trace");
     breakDownSentences();
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "0.8 trace");
+    editSentences();
     countWordFrequency();
     rankSentences();
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "6 trace");
     return summarizer();
 }
 
@@ -136,7 +123,12 @@ void ProcessDocument::breakDownSentences()
     int i = 0;
     while(rawDocument[i] != '\0' && rawDocument[i+1] != '\0')
     {
-        if(rawDocument[i] == '.' && isspace(rawDocument[i+1])) sentencesCount++;
+        if(rawDocument[i] == '.' && isspace(rawDocument[i+1]))
+        {
+            if(i > 2 && rawDocument[i - 1] != 'o' && rawDocument[i - 2] != 'N') sentencesCount++;
+//            sentencesCount++;
+        }
+
         i++;
     }
 
@@ -154,11 +146,8 @@ void ProcessDocument::breakDownSentences()
 
     }
 
-
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "63 trace");
     sentences.clear();
     sentences.resize(sentenceVectorSize+1);
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize: %s",to_string(sentenceVectorSize).c_str());
 
     int j = 0;
 
@@ -169,7 +158,6 @@ void ProcessDocument::breakDownSentences()
         {
             currentSentence += '.';
             sentences[j] = currentSentence;
-//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "sentence: %s, j: %s",sentences[j].c_str(), to_string(j).c_str());
             currentSentence = "";
             j++;
         }
@@ -181,19 +169,36 @@ void ProcessDocument::breakDownSentences()
     }
     sentences[j] = currentSentence;
 
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "64 trace");
 
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "Sentencevectorsize (second trace): %s",to_string(sentenceVectorSize).c_str());
+}
 
+void ProcessDocument::editSentences()
+{
+    // removing unwanted sentences
+    string unwantedSentences[] = {"Notable people with the surname include:"};
+    for(int i=0;i<sentences.size(); i++)
+    {
+        for(int j=0;j<sizeof(unwantedSentences)/sizeof(unwantedSentences[0]);j++)
+        {
 
-//    for(int i=0;i<sentencesCount;i++)
-//    {
-//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s\n",sentences[i].c_str());
-//    }
+//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "j value is equal to: %s", to_string(j).c_str());
+            if(sentences[i].find(unwantedSentences[j]) != std::string::npos)
+            {
+                sentences.erase(sentences.begin() + i);
+                i --;
+                j = unwantedSentences->size();
+            }
+        }
+    }
 
+    // -------------------
+    // modifying sentences
+    // -------------------
 
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",rawDocument.c_str());
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "The number of sentences is: %d", sentencesCount);
+    // glossary of x
+    if(sentences.size() <= 2 && sentences[0].find("This page is a glossary of") != std::string::npos) {
+        sentences[0] = sentences[0].substr(0, sentences[0].length() - 1) + ", however, I don't know how to display it here. Please click the 'Open In Browser' button instead.";
+    }
 }
 
 void ProcessDocument::countWordFrequency()
@@ -219,9 +224,6 @@ void ProcessDocument::countWordFrequency()
 
     }
 
-//    for (auto const& pair: wordFrequency) {
-//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
-//    }
 }
 
 void ProcessDocument::rankSentences()
@@ -242,11 +244,7 @@ void ProcessDocument::rankSentences()
             }
         }
     }
-//    for (auto const& pair: sentenceRanking) {
-//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%s : %d}",pair.first.c_str(), pair.second);
-//    }
 
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "2 trace");
     int longerSentenceBias;
     for(int i=0;i<sentences.size();i++)
     {
@@ -268,43 +266,30 @@ void ProcessDocument::rankSentences()
 
     }
 
-//    int tempScoreArray[sentenceVectorSize] = {0};
     vector<int> tempScoreArray;
     tempScoreArray.resize(sentences.size());
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "3 trace");
     int k = 0;
     for (auto const& pair: sentenceRanking) {
         tempScoreArray[k] = pair.second;
         k++;
     }
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "4 trace");
-    sort(tempScoreArray.begin(), tempScoreArray.end(), greater<int>()); // FIX THIS
+    sort(tempScoreArray.begin(), tempScoreArray.end(), greater<int>());
 
-//    for(int i=0;i<tempScoreArray.size();i++)
-//    {
-//        __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "number (sorted): %s", to_string(tempScoreArray[i]).c_str());
-//    }
 
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
 
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "5 trace");
-
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "{%f}", scoreCutOff);
 }
 
 string ProcessDocument::summarizer() {
 
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "7 trace");
     string processedDocument = sentences[0];
     for(int i=1; i<sentences.size();i++)
     {
         if(sentenceRanking[sentences[i]] > (scoreCutOff)){
             processedDocument += sentences[i];
-//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s", sentences[i].c_str());
         }
     }
 
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "8 trace");
     deallocateVariables();
     return processedDocument;
 }
