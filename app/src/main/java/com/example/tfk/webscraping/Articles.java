@@ -75,6 +75,8 @@ public class Articles{
 
             ret[0] = parseTitle(document);
             ret[1] = parseBody(document).trim();
+            ret[2] = document.location();
+            userInfo.setArticleWordUrlFromWord(ret[2], word);
             System.out.println("Adding new card titled: " + ret[0]);
 
         } catch (InterruptedException e) {
@@ -124,6 +126,7 @@ public class Articles{
                 "boilerplate",
                 "mbox-small",
                 "rt-commentedText",
+                "mw-redirect"
 
         };
 

@@ -16,7 +16,7 @@ import java.util.Hashtable;
 public class GetAllArticleElements extends AsyncTask<String, Void, Document> {
 
 
-    private String url;
+    public String url;
     UserInformation userInfo;
 
 
@@ -36,7 +36,7 @@ public class GetAllArticleElements extends AsyncTask<String, Void, Document> {
 
             for(Element tempElement : document.select("p")){
                 if(tempElement != null){
-                    if(tempElement.text().indexOf("ay refer to:") != -1){
+                    if(checkForList(document, tempElement)){
                         return parseReferToPage(document); // if refer to page
                     }
 
@@ -104,6 +104,16 @@ public class GetAllArticleElements extends AsyncTask<String, Void, Document> {
         // pass the url to parsePageFound
         try {
             document = Jsoup.connect(url).get();
+
+            for(Element tempElement : document.select("p")){
+                if(tempElement != null){
+                    if(checkForList(document, tempElement)){
+                        return parseReferToPage(document); // if refer to page
+                    }
+
+                }
+            }
+
             return document;
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,4 +124,14 @@ public class GetAllArticleElements extends AsyncTask<String, Void, Document> {
 
     }
 
+    private boolean checkForList(Document doc, Element tempElement){
+        return isAListBasedOnKeyWord(doc, tempElement, "ay refer to:") || isAListBasedOnKeyWord(doc, tempElement, "may be:") || isAListBasedOnKeyWord(doc, tempElement, "may mean:") || isAListBasedOnKeyWord(doc, tempElement, "may refer to several");
+    }
+
+    private boolean isAListBasedOnKeyWord(Document doc, Element tempElement, String text) {
+        return (tempElement.text().indexOf(text) != -1 && (tempElement.text().indexOf(doc.getElementById("firstHeading").text()) < tempElement.text().indexOf(text)) && (tempElement.text().indexOf(doc.getElementById("firstHeading").text()) > tempElement.text().indexOf(text) - 60));
+    }
+
 }
+
+

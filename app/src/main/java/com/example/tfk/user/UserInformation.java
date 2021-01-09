@@ -93,7 +93,7 @@ public class UserInformation {
         userLikedWords = new ArrayList<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
-        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Les_Chutes-de-la-Chaudi%C3%A8re"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Allentown"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip", "slamdunk", "tuplets"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
@@ -825,6 +825,13 @@ public class UserInformation {
         return false;
     }
 
+    public synchronized void setArticleWordUrlFromWord(String url, String word) {
+        for(int i=0;i<articleWords.size();i++){
+            if(articleWords.get(i).getWord() == word) articleWords.set(i, new ArticleWords(url, word));
+
+        }
+    }
+
 
     public synchronized void removeArticleAndWord(ArticleWords articleWord){
         removeArticleWordElement(articleWord);
@@ -969,7 +976,7 @@ public class UserInformation {
         return result;
     }
 
-    public void removeArticleWordElement(ArticleWords e){
+    public synchronized void removeArticleWordElement(ArticleWords e){
         for(int i=0;i<articleWords.size();i++){
             if(articleWords.get(i).getUrl() == e.getUrl()) articleWords.remove(i--);
 
