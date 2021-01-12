@@ -9,9 +9,6 @@
 #include <android/log.h>
 #include <map>
 
-#define APPNAME "MyApp"
-
-
 
 using std::string;
 using namespace std;
@@ -26,17 +23,15 @@ string stopwords[127];
 float scoreCutOff;
 int numberOfSentencesToDisplay;
 
-ProcessDocument::ProcessDocument(string x){
+ProcessDocument::ProcessDocument(string x)
+{
     resetVariables();
-
     rawDocument = x;
-
     string stopwordsTemp[] = {"ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than"};
     for(int i=0; i<sizeof(stopwordsTemp)/sizeof(stopwordsTemp[0]);i++)
     {
         stopwords[i] = stopwordsTemp[i];
     }
-
     numberOfSentencesToDisplay = 6;
 }
 
@@ -54,7 +49,8 @@ void ProcessDocument::deallocateVariables()
     sentences = vector<string>();
 }
 
-string ProcessDocument::mainLoop(){
+string ProcessDocument::mainLoop()
+{
     removeSquareBrackets();
     removeNewLines();
     replace("&nbsp;"," ");
@@ -70,7 +66,8 @@ string ProcessDocument::mainLoop(){
 void ProcessDocument::removeSquareBrackets()
 {
     int i = 0;
-    while(i < rawDocument.length()) {
+    while(i < rawDocument.length())
+    {
         if(rawDocument[i] == '[')
         {
             int j = i + 1;
@@ -86,7 +83,6 @@ void ProcessDocument::replace(string original, string replacement)
 {
     const string s = original;
     const string t = replacement;
-
     string::size_type n = 0;
     while ( ( n = rawDocument.find( s, n ) ) != string::npos )
     {
@@ -111,14 +107,12 @@ void ProcessDocument::removeWhiteSpace()
     }
 }
 
-// work on these functions next, needs to be broken down
 void ProcessDocument::removeNewLines(){
     rawDocument.erase(std::remove(rawDocument.begin(), rawDocument.end(), '\n'), rawDocument.end());
 }
 
 void ProcessDocument::breakDownSentences()
 {
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "61 trace");
     int sentencesCount = 2;
     int i = 0;
     while(rawDocument[i] != '\0' && rawDocument[i+1] != '\0')
@@ -126,15 +120,10 @@ void ProcessDocument::breakDownSentences()
         if(rawDocument[i] == '.' && isspace(rawDocument[i+1]))
         {
             if(i > 2 && rawDocument[i - 1] != 'o' && rawDocument[i - 2] != 'N') sentencesCount++;
-//            sentencesCount++;
         }
-
         i++;
     }
-
     string currentSentence = "";
-
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "62 trace");
 
     int sentenceVectorSize = 0;
     for(int i=0;i<rawDocument.length() - 1;i++)
@@ -150,8 +139,6 @@ void ProcessDocument::breakDownSentences()
     sentences.resize(sentenceVectorSize+1);
 
     int j = 0;
-
-
     for(int i=0;i<rawDocument.length() - 1;i++)
     {
         if(rawDocument[i] == '.' && isspace(rawDocument[i+1]) )
@@ -168,20 +155,15 @@ void ProcessDocument::breakDownSentences()
 
     }
     sentences[j] = currentSentence;
-
-
 }
 
 void ProcessDocument::editSentences()
 {
-    // removing unwanted sentences
     string unwantedSentences[] = {"Notable people with the surname include:"};
     for(int i=0;i<sentences.size(); i++)
     {
         for(int j=0;j<sizeof(unwantedSentences)/sizeof(unwantedSentences[0]);j++)
         {
-
-//            __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "j value is equal to: %s", to_string(j).c_str());
             if(sentences[i].find(unwantedSentences[j]) != std::string::npos)
             {
                 sentences.erase(sentences.begin() + i);
@@ -191,11 +173,9 @@ void ProcessDocument::editSentences()
         }
     }
 
-    // -------------------
     // modifying sentences
-    // -------------------
 
-    // glossary of x
+    // - glossary of x
     if(sentences.size() <= 2 && sentences[0].find("This page is a glossary of") != std::string::npos) {
         sentences[0] = sentences[0].substr(0, sentences[0].length() - 1) + ", however, I don't know how to display it here. Please click the 'Open In Browser' button instead.";
     }
@@ -203,7 +183,6 @@ void ProcessDocument::editSentences()
 
 void ProcessDocument::countWordFrequency()
 {
-    // WORK ON THIS NEXT
     string wordTemp = "";
     for(int i=0;i<rawDocument.length();i++)
     {
@@ -221,14 +200,12 @@ void ProcessDocument::countWordFrequency()
             wordTemp = "";
         }
         else wordTemp += tolower(rawDocument[i]);
-
     }
 
 }
 
 void ProcessDocument::rankSentences()
 {
-    // __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "1 trace");
     for(int i=0;i<sentences.size();i++)
     {
         for (auto const& pair: wordFrequency) {
@@ -269,19 +246,17 @@ void ProcessDocument::rankSentences()
     vector<int> tempScoreArray;
     tempScoreArray.resize(sentences.size());
     int k = 0;
-    for (auto const& pair: sentenceRanking) {
+    for (auto const& pair: sentenceRanking)
+    {
         tempScoreArray[k] = pair.second;
         k++;
     }
     sort(tempScoreArray.begin(), tempScoreArray.end(), greater<int>());
-
-
     scoreCutOff = tempScoreArray[numberOfSentencesToDisplay];
-
 }
 
-string ProcessDocument::summarizer() {
-
+string ProcessDocument::summarizer()
+{
     string processedDocument = sentences[0];
     for(int i=1; i<sentences.size();i++)
     {
@@ -289,7 +264,6 @@ string ProcessDocument::summarizer() {
             processedDocument += sentences[i];
         }
     }
-
     deallocateVariables();
     return processedDocument;
 }

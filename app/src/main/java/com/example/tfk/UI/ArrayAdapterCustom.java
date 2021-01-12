@@ -14,22 +14,18 @@ import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.cardview.widget.CardView;
-
 import com.example.tfk.R;
-
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
     Context mContext;
-
     public TextView[] bodyArray;
     public TextView[] pageIndicatorArray;
     public CardView[] cardViewArray;
-
 
     public ArrayAdapterCustom(Context context, int resourceId, List<Cards> items) {
         super(context, resourceId, items);
@@ -39,10 +35,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-
-
         Cards card_item = getItem(position);
-
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.card, parent, false);
         }
@@ -59,7 +52,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
 
         title.setText(card_item.getTitle() + " : " + card_item.getWord()); // to be removed, this is just to visualize the words
         title.setText(card_item.getTitle()); // to be uncommented
-        if(card_item.getBody()[0].indexOf(" . . .") == -1) splitUpBodyTextFunction(body, card_item, card_item.getBody()[0], pageIndicatorArray[position]);
+        if (card_item.getBody()[0].indexOf(" . . .") == -1) splitUpBodyTextFunction(body, card_item, card_item.getBody()[0], pageIndicatorArray[position]);
         else {
             body.setText(card_item.getBody()[0]);
             if(card_item.getBody().length > 1){
@@ -67,39 +60,25 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
             }
         }
         link.setText(card_item.getLink());
-
-//        System.out.println("Running on: " + card_item.getBody()[0]);
-
-
         return convertView;
     }
 
-
     private void splitUpBodyTextFunction(TextView body, Cards card_item, String bodyText, TextView pageIndicator) {
-
         body.setText(bodyText);
         final String[] bodyTextFinal = {bodyText};
         final int[] i = {0};
-
         ViewTreeObserver vto;
         vto = body.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 body.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                if(i[0] <= 0){
+                if (i[0] <= 0){
                     SplitUpBodyText split = new SplitUpBodyText(body, card_item, bodyText, pageIndicator, this);
                     split.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
                 i[0]++;
-
             }
-
         });
-
-
     }
-
-
 }

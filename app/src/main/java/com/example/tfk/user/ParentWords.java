@@ -1,7 +1,6 @@
 package com.example.tfk.user;
 
 public class ParentWords {
-
     private String parent;
     private String word;
 

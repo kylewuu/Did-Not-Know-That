@@ -27,5 +27,4 @@ public:
     void deallocateVariables();
 };
 
-
 #endif //TFK_MAIN_H

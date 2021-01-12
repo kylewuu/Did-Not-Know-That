@@ -16,5 +16,4 @@ public class ArticleWords {
     public String getWord() {
         return word;
     }
-
 }

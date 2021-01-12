@@ -1,5 +1,6 @@
 package com.example.tfk.UI;
 
+
 public class Cards {
     private String title;
     public String[] body;
@@ -12,7 +13,6 @@ public class Cards {
         this.body = new String[]{elements[1]};
         this.link = elements[2];
         this.word = elements[3];
-
         currentCard = 0;
     }
 
@@ -24,10 +24,9 @@ public class Cards {
     }
     public String getWord() { return this.word;}
     public String getNextCard() {
-        if(currentCard < this.body.length - 1) {
+        if (currentCard < this.body.length - 1) {
             currentCard ++;
         }
-//        else currentCard = 0;
         return this.body[currentCard];
     }
 
@@ -35,15 +34,12 @@ public class Cards {
         if(currentCard > 0) {
             currentCard --;
         }
-//        else currentCard = this.body.length - 1;
         return this.body[currentCard];
     }
-
 
     public String getLink(){
         return this.link;
     }
-
 
     public void setBody(String[] body) {
         this.body = body;
