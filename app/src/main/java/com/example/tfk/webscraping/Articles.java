@@ -108,7 +108,9 @@ public class Articles{
         String s = document.html().replaceAll("\\\\n", " ");
         String documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
         if (documentString.indexOf("(Redirected from ") != -1) documentString = documentString.substring(documentString.indexOf(")") + 1);
-        if (documentString.indexOf(("()")) != -1) documentString.replace("()", "");
+        if (documentString.indexOf(("()")) != -1) documentString = documentString.replace("()", "");
+        if (documentString.indexOf(("(, )")) != -1)  documentString = documentString.replace(" (, )", "");
+
         return ReturnProcessedDocument(documentString); // summarized document
     }
 
@@ -119,3 +121,4 @@ public class Articles{
     // C++ methods
     public native String ReturnProcessedDocument(String x);
 }
+

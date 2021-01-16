@@ -77,7 +77,7 @@ public class UserInformation {
         userLikedWords = new ArrayList<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
-        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Galesburg"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Boston"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip", "slamdunk", "tuplets"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});
