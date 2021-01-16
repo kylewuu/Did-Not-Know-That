@@ -159,7 +159,7 @@ void ProcessDocument::breakDownSentences()
 
 void ProcessDocument::editSentences()
 {
-    string unwantedSentences[] = {"Notable people with the surname include:"};
+    string unwantedSentences[] = {"Notable people with the surname include:", "This time is used in:"};
     for(int i=0;i<sentences.size(); i++)
     {
         for(int j=0;j<sizeof(unwantedSentences)/sizeof(unwantedSentences[0]);j++)
@@ -176,8 +176,8 @@ void ProcessDocument::editSentences()
     // modifying sentences
 
     // - glossary of x
-    if(sentences.size() <= 2 && sentences[0].find("This page is a glossary of") != std::string::npos) {
-        sentences[0] = sentences[0].substr(0, sentences[0].length() - 1) + ", however, I don't know how to display it here. Please click the 'Open In Browser' button instead.";
+    if(sentences.size() <= 2 && (sentences[0].find("This page is a glossary of") != std::string::npos || sentences[0].find("is the name of some places in the United States of America:") != std::string::npos)) {
+        sentences[0] = sentences[0].substr(0, sentences[0].length() - 1) + ", however, I'm not able to display it here. Please click the 'Open In Browser' button instead.";
     }
 }
 

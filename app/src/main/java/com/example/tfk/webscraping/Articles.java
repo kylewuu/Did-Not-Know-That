@@ -24,13 +24,14 @@ public class Articles{
         ret[3] = word;
 
         try {
-            System.out.println("Grabbing document from url: " + url);
+
             Document document = (new GetAllArticleElements(url, userInfo)).execute().get();
 
             ret[0] = parseTitle(document);
             ret[1] = parseBody(document).trim();
             ret[2] = document.location();
             userInfo.setArticleWordUrlFromWord(ret[2], word);
+            System.out.println("Grabbing document from url: " + ret[2]);
             System.out.println("Adding new card titled: " + ret[0]);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -107,6 +108,7 @@ public class Articles{
         String s = document.html().replaceAll("\\\\n", " ");
         String documentString = Jsoup.clean(s, "", Whitelist.none(), new Document.OutputSettings().prettyPrint(false));
         if (documentString.indexOf("(Redirected from ") != -1) documentString = documentString.substring(documentString.indexOf(")") + 1);
+        if (documentString.indexOf(("()")) != -1) documentString.replace("()", "");
         return ReturnProcessedDocument(documentString); // summarized document
     }
 

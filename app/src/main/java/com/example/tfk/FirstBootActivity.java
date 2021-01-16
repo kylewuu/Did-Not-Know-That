@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.tfk.user.UserInformation;
 import org.json.JSONException;
+
+import java.util.Arrays;
 import java.util.Vector;
 
 
@@ -51,9 +53,8 @@ public class FirstBootActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                // TODO change it back to the dynamic init text files instead of the fake data
-//                 userInfo.firstTimeInitTextFilesBasedOnPreference(Arrays.copyOf(chosenWords.toArray(), chosenWords.toArray().length, String[].class));
-                userInfo.firstTimeInitTextFiles();
+                 userInfo.firstTimeInitTextFilesBasedOnPreference(Arrays.copyOf(chosenWords.toArray(), chosenWords.toArray().length, String[].class));
+//                userInfo.firstTimeInitTextFiles();
                 Intent intent = new Intent();
                 setResult(RESULT_OK,intent );
                 finish();
@@ -63,7 +64,7 @@ public class FirstBootActivity extends AppCompatActivity {
 
     private void createCards() {
         String[] wordsToChooseFrom = new String[] {
-                "technology",
+                "computervision",
                 "basketball",
                 "nfl",
                 "belgium",
