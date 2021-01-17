@@ -32,4 +32,4 @@ Other features and notes:
 
 Clone this repo into Android Studio and run it on a physical Android Device or emulator.
 
-Or download it here in the Google Play Store: Currently being reviewed by Google before it can be published.
+Or download it here in the Google Play Store: _Currently being reviewed by Google before it can be published._
