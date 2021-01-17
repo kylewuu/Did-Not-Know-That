@@ -2,6 +2,8 @@ package com.example.tfk.UI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import com.example.tfk.R;
 import com.example.tfk.user.ArticleWords;
@@ -40,11 +42,14 @@ public class CardHandler {
         arrayAdapter = new ArrayAdapterCustom(mContext, R.layout.card, cards );
         articles = new Articles(userInfo);
 
-        if (userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) {
-            addSynchronized();
-            if(userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) addSynchronized();
-            userInfo.findMoreWords();
-        } else noCardsLeft();
+        if (!isConnection()) showNoConnection();
+        else {
+            if (userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) {
+                addSynchronized();
+                if (userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) > 0) addSynchronized();
+                userInfo.findMoreWords();
+            } else noCardsLeft();
+        }
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) activity.findViewById(R.id.frame);
         flingContainer.setAdapter(arrayAdapter);
@@ -53,15 +58,17 @@ public class CardHandler {
             public void removeFirstObjectInAdapter() {
                 Log.d("LIST", "removed object!");
                 Log.d("Number of cards left", String.valueOf(cards.size()));
-                if (cards.size() <= 1) noCardsLeft();
+                if (isConnection()) if (cards.size() <= 1) noCardsLeft();
+
                 userInfo.removeArticleAndWord(new ArticleWords(cards.get(0).getLink(), cards.get(0).getWord()));
                 cards.remove(0);
+                if (!isConnection()) showNoConnection();
                 arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                userInfo.checkSupplyOfWordsAndArticles();
+                if (isConnection()) userInfo.checkSupplyOfWordsAndArticles();
                 Cards card = (Cards) dataObject;
                 userInfo.removeUserWordOnDislike(card.getWord());
             }
@@ -70,8 +77,8 @@ public class CardHandler {
             public void onRightCardExit(Object dataObject) {
                 Cards card = (Cards) dataObject;
                 String word = card.getWord();
-                if (word != "CardDeckEmpty") userInfo.updateUserLikedWords(new String[]{word});
-                userInfo.checkSupplyOfWordsAndArticles();
+                if (word != "doNotAdd") userInfo.updateUserLikedWords(new String[]{word});
+                if (isConnection()) userInfo.checkSupplyOfWordsAndArticles();
             }
 
             @Override
@@ -95,7 +102,7 @@ public class CardHandler {
             public void run() {
                 Log.d("LIST", "Adding new card");
                 if (userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) addSynchronized();
-                if (cards.size() < maxSizeOfCardsDeck && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >=1 ) addNewCard();
+                if (cards.size() < maxSizeOfCardsDeck && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >=1 && isConnection()) addNewCard();
             }
         });
     }
@@ -136,9 +143,27 @@ public class CardHandler {
     }
 
     private synchronized void addSynchronized() {
-        cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+        if (isConnection() && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 2) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
     }
 
+    private synchronized boolean isConnection() {
+        boolean connected = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            connected = true;
+        }
+        else
+            connected = false;
+
+        return connected;
+    }
+
+    private synchronized void showNoConnection() {
+        cards.clear();
+        cards.add(new Cards(new String[]{"No connection", "Please check your internet connection and try again.", "", "doNotAdd"}));
+    }
 
 
 

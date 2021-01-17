@@ -27,7 +27,6 @@ Other features and notes:
 - There is a difference between user topics and user-liked topics. User topics consist of user's likes as well as the new words that were found using word embedding. User liked topics are only the topics that the users have swiped right on. Articles are found using user topics.
 - By swiping left to "dislike", it is pretty much the equivalent of just not "liking" it. Therefore the app only cares about the liked words, and will just simply ignore the disliked words instead of handling disliked words.
 - Swiping left on the starter topic cards will not dislike them, because they have already been added to the user's likes by choosing them in the first initialization screen.
-- If there is not internet connection the App will just crash. Connect to the internet and restart.
 
 ## Try it out now!
 

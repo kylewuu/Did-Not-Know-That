@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
@@ -45,6 +46,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
         TextView link = (TextView) convertView.findViewById(R.id.linkText);
         TextView pageIndicator = (TextView) convertView.findViewById(R.id.pageIndicator);
         CardView cardView = (CardView) convertView.findViewById(R.id.cardView);
+        Button button = (Button) convertView.findViewById(R.id.button);
 
         bodyArray[position] = body;
         pageIndicatorArray[position] = pageIndicator;
@@ -60,6 +62,7 @@ public class ArrayAdapterCustom extends ArrayAdapter<Cards> {
             }
         }
         link.setText(card_item.getLink());
+        if (card_item.getLink() == "") button.setVisibility(View.GONE);
         return convertView;
     }
 
