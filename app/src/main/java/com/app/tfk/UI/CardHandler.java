@@ -1,14 +1,14 @@
-package com.example.tfk.UI;
+package com.app.tfk.UI;
 
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import com.example.tfk.R;
-import com.example.tfk.user.ArticleWords;
-import com.example.tfk.user.UserInformation;
-import com.example.tfk.webscraping.Articles;
+import com.app.tfk.R;
+import com.app.tfk.user.ArticleWords;
+import com.app.tfk.user.UserInformation;
+import com.app.tfk.webscraping.Articles;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.rd.PageIndicatorView;
 import java.util.ArrayList;

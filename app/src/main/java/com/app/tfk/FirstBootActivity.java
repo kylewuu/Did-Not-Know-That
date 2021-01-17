@@ -1,4 +1,4 @@
-package com.example.tfk;
+package com.app.tfk;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.example.tfk.user.UserInformation;
+import com.app.tfk.user.UserInformation;
 import org.json.JSONException;
 
 import java.util.Arrays;

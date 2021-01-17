@@ -1,7 +1,7 @@
-package com.example.tfk.webscraping;
+package com.app.tfk.webscraping;
 
-import com.example.tfk.user.ArticleWords;
-import com.example.tfk.user.UserInformation;
+import com.app.tfk.user.ArticleWords;
+import com.app.tfk.user.UserInformation;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

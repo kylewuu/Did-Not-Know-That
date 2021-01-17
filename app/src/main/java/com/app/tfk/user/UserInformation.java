@@ -1,4 +1,4 @@
-package com.example.tfk.user;
+package com.app.tfk.user;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,7 +6,7 @@ import android.os.Build;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import com.example.tfk.webscraping.FindMoreArticles;
+import com.app.tfk.webscraping.FindMoreArticles;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -77,7 +77,7 @@ public class UserInformation {
         userLikedWords = new ArrayList<>();
 
         String[] userStartWords = new String[]{"travel", "software", "anti-plague", "military", "university", "football", "production", "announced", "unforced", "radio"};
-        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/Boston"};
+        String[] userStartArticles = new String[]{"https://en.wikipedia.org/wiki/tuplets", "https://en.wikipedia.org/wiki/Slamdunk", "https://en.wikipedia.org/wiki/TEAMS"};
         // temp values for testing but ALWAYS MAKE SURE TO START WITH SOME VALUES
         updateUsedWords(new String[]{"travelling", "trip", "slamdunk", "tuplets"});
         updateUsedArticles(new String[]{"https://en.wikipedia.org/wiki/Norway"});

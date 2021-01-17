@@ -1,25 +1,17 @@
-package com.example.tfk.UI;
+package com.app.tfk.UI;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.text.Layout;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.cardview.widget.CardView;
-import com.example.tfk.R;
+import com.app.tfk.R;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class ArrayAdapterCustom extends ArrayAdapter<Cards> {

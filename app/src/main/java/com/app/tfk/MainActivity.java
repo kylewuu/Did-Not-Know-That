@@ -1,4 +1,4 @@
-package com.example.tfk;
+package com.app.tfk;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
-import com.example.tfk.UI.CardHandler;
-import com.example.tfk.user.UserInformation;
-import com.example.tfk.webscraping.Articles;
+import com.app.tfk.UI.CardHandler;
+import com.app.tfk.user.UserInformation;
+import com.app.tfk.webscraping.Articles;
 import com.google.firebase.functions.FirebaseFunctions;
 import org.json.JSONException;
 

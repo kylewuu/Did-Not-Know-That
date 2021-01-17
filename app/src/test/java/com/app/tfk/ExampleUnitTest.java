@@ -1,4 +1,4 @@
-package com.example.tfk;
+package com.app.tfk;
 
 import org.junit.Test;
 

@@ -159,7 +159,7 @@ void ProcessDocument::breakDownSentences()
 
 void ProcessDocument::editSentences()
 {
-    string unwantedSentences[] = {"Notable people with the surname include:", "This time is used in:"};
+    string unwantedSentences[] = {"Notable people with the surname include:", "This time is used in:", "may also refer to:"};
     for(int i=0;i<sentences.size(); i++)
     {
         for(int j=0;j<sizeof(unwantedSentences)/sizeof(unwantedSentences[0]);j++)

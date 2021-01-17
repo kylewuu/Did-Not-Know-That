@@ -1,4 +1,4 @@
-package com.example.tfk.UI;
+package com.app.tfk.UI;
 
 import android.app.Activity;
 import android.view.View;

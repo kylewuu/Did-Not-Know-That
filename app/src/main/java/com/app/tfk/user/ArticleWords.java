@@ -1,4 +1,4 @@
-package com.example.tfk.user;
+package com.app.tfk.user;
 
 public class ArticleWords {
     private String word;

@@ -1,4 +1,4 @@
-package com.example.tfk.user;
+package com.app.tfk.user;
 
 public class ParentWords {
     private String parent;

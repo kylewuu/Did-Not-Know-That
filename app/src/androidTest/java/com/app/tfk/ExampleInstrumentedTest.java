@@ -1,4 +1,4 @@
-//package com.example.tfk;
+//package com.app.tfk;
 //
 //import android.content.Context;
 //
@@ -21,6 +21,6 @@
 //    public void useAppContext() {
 //        // Context of the app under test.
 //        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//        assertEquals("com.example.tfk", appContext.getPackageName());
+//        assertEquals("com.app.tfk", appContext.getPackageName());
 //    }
 //}

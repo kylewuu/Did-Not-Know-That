@@ -13,41 +13,24 @@ using std::to_string;
 
 extern "C" JNIEXPORT jstring JNICALL
 
-Java_com_example_tfk_MainActivity_DisplayText(
+Java_com_app_tfk_MainActivity_DisplayText(
         JNIEnv* env,
         jobject /* this */,
-        jstring test) {
-
-//    ProcessDocument processedDocument{};
-//    string newString = text_display.HelloWorld();
-
+        jstring test)
+{
     string hello = "Hello from C++";
-    int x = 5;
-//    return env->NewStringUTF(newString.c_str());
-//    return env->NewStringUTF(to_string(5).c_str());
     return test;
 }
 
-// old template
-//extern "C" JNIEXPORT jstring JNICALL
-//Java_com_example_TFK_MainActivity_stringFromJNI(
-//        JNIEnv* env,
-//        jobject /* this */) {
-//    std::string hello = "Hello from C++";
-//    return env->NewStringUTF(hello.c_str());
-//}
-
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_example_tfk_webscraping_Articles_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x) {
+Java_com_app_tfk_webscraping_Articles_ReturnProcessedDocument(JNIEnv *env, jobject thiz, jstring x)
+{
     string cppString = jstringToString(env, x);
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",cppString.c_str());
     ProcessDocument processedDocument{cppString};
     string newString = processedDocument.mainLoop();
-//    __android_log_print(ANDROID_LOG_VERBOSE, APPNAME, "%s",newString.c_str());
     return env->NewStringUTF(newString.c_str());
 }
-
 
 // house keeping functions
 string jstringToString(JNIEnv* env, jstring jstr)
