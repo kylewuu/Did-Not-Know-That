@@ -143,7 +143,7 @@ public class CardHandler {
     }
 
     private synchronized void addSynchronized() {
-        if (isConnection() && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 2) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
+        if (isConnection() && userInfo.getNumberOfUnusedArticles(getArticlesWordsFromCard(cards)) >= 1) cards.add(new Cards(articles.getAllArticlesElements(userInfo, getArticlesWordsFromCard(cards))));
     }
 
     private synchronized boolean isConnection() {
@@ -164,13 +164,4 @@ public class CardHandler {
         cards.clear();
         cards.add(new Cards(new String[]{"No connection", "Please check your internet connection and try again.", "", "doNotAdd"}));
     }
-
-
-
-
-
-
-
-
-
 }
