@@ -32,4 +32,4 @@ Other features and notes:
 
 Clone this repo into Android Studio and run it on a physical Android Device or emulator.
 
-Or download it here on Google Play: _Currently being reviewed by Google before it will appear on Google Play._
+Or download it [here](https://play.google.com/store/apps/details?id=com.app.tfk) on Google Play
