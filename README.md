@@ -1,10 +1,10 @@
 # Did Not Know That
 
-The goal of this application is for the users to learn about interesting topics quickly on their Android devices.
+The goal of this application is for the users to quickly learn about interesting topics on their Android devices.
 
-The application will fetch and summarize Wikipedia articles and display it to the users as cards. The articles that are chosen are based on what the users like.
+The application will fetch and summarize Wikipedia articles and display them to the users as cards. The articles that are chosen are based on what the users like.
 
-The users will train the AI by swiping right to "like" an article, and swiping left to "dislike" an article. From this, the AI will be able to decide on what new articles to fetch and show it to the users.
+The users will train the AI by swiping right to "like" an article, and swiping left to "dislike" an article. From this, the AI will be able to decide on what new articles to fetch and show to the users.
 
 ## How it was developed
 
@@ -32,4 +32,4 @@ Other features and notes:
 
 Clone this repo into Android Studio and run it on a physical Android Device or emulator.
 
-Or download it here in the Google Play Store: TBA
+Or download it [here](https://play.google.com/store/apps/details?id=com.app.tfk) on Google Play
