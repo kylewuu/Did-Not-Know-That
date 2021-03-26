@@ -1,4 +1,4 @@
-# Did Not Know That
+# Wikideck
 
 The goal of this application is for the users to quickly learn about interesting topics on their Android devices.
 
