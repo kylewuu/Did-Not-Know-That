@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "Wikideck"
+rootProject.name = "Wiki-Deck"
